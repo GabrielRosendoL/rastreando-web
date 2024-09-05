@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="97.333336"
+   height="97.333336"
+   viewBox="0 0 97.333336 97.333336"
+   sodipodi:docname="LOGOTIPO CMYK-6.eps"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     id="g8"
+     inkscape:groupmode="layer"
+     inkscape:label="ink_ext_XXXXXX"
+     transform="matrix(1.3333333,0,0,-1.3333333,0,97.333333)">
+    <g
+       id="g10"
+       transform="scale(0.1)">
+      <path
+         d="M 485.336,619.66 V 244.68 C 485.336,111.242 376.117,2.03906 242.695,2.03906 h -0.007 C 109.258,2.03906 0.046875,111.242 0.046875,244.68 v 362.488 c 0,6.879 5.613285,12.492 12.496125,12.492 h 472.793"
+         style="fill:#42b9c0;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path12" />
+      <path
+         d="m 122.844,729.957 h 362.492 c 133.422,0 242.617,-109.195 242.617,-242.629 v -0.015 c 0,-133.438 -109.23,-242.637 -242.617,-242.637 H 202.055 110.344 v 1.992 470.797 c 0,6.879 5.617,12.492 12.5,12.492"
+         style="fill:#4b60b6;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path14" />
+      <path
+         d="M 485.336,244.676 H 220.645 l -88.973,-88.969 c -3.649,-3.648 -8.844,-4.68 -13.609,-2.707 -4.77,1.98 -7.719,6.387 -7.719,11.543 v 80.133 374.992 h 362.488 c 6.887,0 12.504,-5.617 12.504,-12.496 V 244.676"
+         style="fill:#352f91;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         id="path16" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2017", // Atualizado para es2017 ou superior
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "es2022", // Atualizado para es2022 ou superior
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "server/*": ["../server/*"]
+    }
+  },
+  "include": [
+    "src",
+    "server",
+    "server/.env.ts"
+  ]
+}
