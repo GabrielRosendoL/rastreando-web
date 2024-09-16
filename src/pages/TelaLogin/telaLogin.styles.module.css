@@ -1,57 +1,92 @@
-/* pages/TelaLogin/telaLogin.styles.module.css */
+@font-face {
+  font-family: 'Quicksand-Bold';
+  src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Quicksand-Medium';
+  src: url('../../assets/fonts/Quicksand-Medium.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand-Medium', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #232d97;
+}
+
 .container {
-  max-width: 400px;
-  margin: auto;
+  background-color: white;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-input {
+.title {
+  font-family: 'Quicksand-Bold', sans-serif;
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #f03f04;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.input {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin-top: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
-button {
+.btn {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #232d97;
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-color: #ff5721;
+}
+
+.btnCadastro {
+  width: 100%;
+  padding: 10px;
+  background-color: #232d97;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
   margin-top: 10px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btnCadastro:hover {
+  background-color: #ff5721;
+}
+
+.errorMessage {
+  color: red;
+  margin-top: 10px;
 }
 
 .options {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
-}
-
-.optionButton {
-  width: 48%;
-  padding: 10px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.optionButton:hover {
-  background-color: #218838;
-}
-
-.error {
-  color: red;
-  margin-top: 10px;
 }

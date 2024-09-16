@@ -1,81 +1,52 @@
-import { addDoc, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
-import { db } from '../../config/firebase-config'; // Certifique-se que seu arquivo firebase-config está correto
-import styles from './telaGerenciamento.styles.module.css';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../config/firebase-config';
+import styles from './telaGerenciamento.styles.module.css'; // Importa o CSS com o uso de módulos
 
 const TelaGerenciamento: React.FC = () => {
-    const [tipoCancer, setTipoCancer] = useState('');
-    const [calculoDeRisco, setCalculoDeRisco] = useState<string[]>([]);
-    const [novaStringCalculo, setNovaStringCalculo] = useState('');
-    const [mensagem, setMensagem] = useState('');
+  const [userName, setUserName] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const db = getFirestore();
 
-    // Função para adicionar um tipo de câncer ao Firebase
-    const handleAddTipoCancer = async () => {
-        if (!tipoCancer) {
-            setMensagem('Por favor, insira um nome para o tipo de câncer.');
-            return;
+  useEffect(() => {
+    const fetchUserName = async () => {
+      console.log('fetchUserName chamado');
+      const user = auth.currentUser;
+      if (user) {
+        console.log('Usuário autenticado:', user.uid);
+        const userDocRef = doc(db, 'administradores', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const nome = userDoc.data().nome;
+          console.log('Nome do usuário:', nome);
+          setUserName(nome);
+        } else {
+          console.log('Documento do usuário não encontrado');
         }
-
-        try {
-            // Adicionar o documento à coleção tiposCancer
-            await addDoc(collection(db, 'tiposCancer'), {
-                tipoCancer,
-                calculoDeRisco
-            });
-
-            setMensagem('Tipo de câncer cadastrado com sucesso!');
-            setTipoCancer('');
-            setCalculoDeRisco([]);
-            setNovaStringCalculo('');
-        } catch (error) {
-            console.error('Erro ao adicionar tipo de câncer:', error);
-            setMensagem('Erro ao cadastrar tipo de câncer.');
-        }
+      } else {
+        console.log('Nenhum usuário autenticado');
+      }
     };
 
-    // Função para adicionar uma string ao array de cálculo de risco
-    const handleAddStringCalculo = () => {
-        if (novaStringCalculo) {
-            setCalculoDeRisco([...calculoDeRisco, novaStringCalculo]);
-            setNovaStringCalculo(''); // Limpar o campo após adicionar
-        }
-    };
+    fetchUserName();
+  }, [db]);
 
-    return (
-        <div className={styles.container}>
-            <h2>Cadastro de Tipos de Câncer</h2>
+  const handleButtonClick = () => {
+    navigate('/sinaisSintomas');
+  };
 
-            <label htmlFor="tipoCancer">Tipo de Câncer:</label>
-            <input
-                type="text"
-                id="tipoCancer"
-                value={tipoCancer}
-                onChange={(e) => setTipoCancer(e.target.value)}
-                placeholder="Digite o nome do tipo de câncer"
-                required
-            />
-
-            <label htmlFor="calculoDeRisco">Adicionar Cálculo de Risco:</label>
-            <input
-                type="text"
-                id="calculoDeRisco"
-                value={novaStringCalculo}
-                onChange={(e) => setNovaStringCalculo(e.target.value)}
-                placeholder="Digite o cálculo de risco"
-            />
-            <button onClick={handleAddStringCalculo}>Adicionar ao cálculo de risco</button>
-
-            <ul>
-                {calculoDeRisco.map((calculo, index) => (
-                    <li key={index}>{calculo}</li>
-                ))}
-            </ul>
-
-            <button onClick={handleAddTipoCancer}>Cadastrar Tipo de Câncer</button>
-
-            {mensagem && <p>{mensagem}</p>}
-        </div>
-    );
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>
+        <span className={styles.rastreando}>Rastreando</span> <span className={styles.app}>WEB</span>
+      </h1>
+      <h2 className={styles.welcomeMessage}>Bem-vindo, {userName}!</h2>
+      <button onClick={handleButtonClick} className={styles.btn}>
+        Sinais e Sintomas
+      </button>
+    </div>
+  );
 };
 
 export default TelaGerenciamento;

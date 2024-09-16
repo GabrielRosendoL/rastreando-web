@@ -36,14 +36,19 @@ body {
   color: #f03f04;
 }
 
-.welcomeMessage {
-  font-family: 'Quicksand-Bold', sans-serif;
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #232d97;
+.formGroup {
+  margin-bottom: 15px;
 }
 
-.btn {
+.select, .input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btnAdd, .btnSave {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -52,8 +57,39 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 10px;
 }
 
-.btn:hover {
+.btnAdd:hover, .btnSave:hover {
   background-color: #ff5721;
+}
+
+.sintomasSelect {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 100px;
+  overflow-y: auto;
+}
+
+/* Estilização da barra de rolagem */
+.sintomasSelect::-webkit-scrollbar {
+  width: 12px;
+}
+
+.sintomasSelect::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.sintomasSelect::-webkit-scrollbar-thumb {
+  background: #ff5721;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+.sintomasSelect::-webkit-scrollbar-thumb:hover {
+  background: #ff5721;
 }
