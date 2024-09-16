@@ -16,7 +16,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #232d97;
+  background-color: #232d97 !important;
 }
 
 .container {

@@ -1,0 +1,95 @@
+@font-face {
+    font-family: 'Quicksand-Bold';
+    src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'Quicksand-Medium';
+    src: url('../../assets/fonts/Quicksand-Medium.ttf') format('truetype');
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand-Medium', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #232d97;
+  }
+  
+  .container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .title {
+    font-family: 'Quicksand-Bold', sans-serif;
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #f03f04;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .select, .input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .btnAdd, .btnSave {
+    width: 100%;
+    padding: 10px;
+    background-color: #232d97;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .btnAdd:hover, .btnSave:hover {
+    background-color: #ff5721;
+  }
+  
+  .sintomasSelect {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 100px;
+    overflow-y: auto;
+  }
+  
+  /* Estilização da barra de rolagem */
+  .sintomasSelect::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .sintomasSelect::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .sintomasSelect::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+  }
+  
+  .sintomasSelect::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

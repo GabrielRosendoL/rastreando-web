@@ -1,43 +1,51 @@
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './sinaisSintomas.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './indicacoesRastreio.styles.module.css'; // Importa o CSS com o uso de módulos
 
-const SinaisSintomas: React.FC = () => {
+const IndicacoesRastreio: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
-  const [sintomas, setSintomas] = useState<string[]>([]);
-  const [novoSintoma, setNovoSintoma] = useState<string>('');
+  const [texto, setTexto] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = auth.currentUser;
+      if (user && sexo && neoplasia) {
+        const docRef = doc(db, 'indicacoesRastreio', `${user.uid}_${sexo}_${neoplasia}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setTexto(docSnap.data().texto);
+        }
+      }
+    };
+    fetchData();
+  }, [sexo, neoplasia, db]);
+
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
     setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
+    setTexto(''); // Resetar texto ao mudar o sexo
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setNeoplasia(event.target.value);
-  };
-
-  const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '') {
-      setSintomas([...sintomas, novoSintoma]);
-      setNovoSintoma('');
-    }
+    setTexto(''); // Resetar texto ao mudar a neoplasia
   };
 
   const handleSave = async () => {
     setLoading(true);
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'sinaisSintomas', user.uid);
+      const docRef = doc(db, 'indicacoesRastreio', `${user.uid}_${sexo}_${neoplasia}`);
       await setDoc(docRef, {
         sexo,
         neoplasia,
-        sintomas,
+        texto,
       });
       navigate(-1); // Redireciona para a página anterior
     } else {
@@ -45,14 +53,14 @@ const SinaisSintomas: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   const handleEdit = () => {
-    navigate('/editarSinaisSintomas');
+    navigate('/editarIndicacoesRastreio');
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Cadastrar Sinais e Sintomas</h1>
+      <h1 className={styles.title}>Cadastrar Indicações de Rastreamento</h1>
       <div className={styles.formGroup}>
         <label>Sexo:</label>
         <select value={sexo || ''} onChange={handleSexoChange} className={styles.select}>
@@ -86,19 +94,12 @@ const SinaisSintomas: React.FC = () => {
       )}
       {neoplasia && (
         <div className={styles.formGroup}>
-          <label>Adicione Sinais e Sintomas:</label>
-          <input
-            type="text"
-            value={novoSintoma}
-            onChange={(e) => setNovoSintoma(e.target.value)}
-            className={styles.input}
+          <label>Texto:</label>
+          <textarea
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            className={styles.textarea}
           />
-          <button onClick={handleAddSintoma} className={styles.btnAdd}>Adicionar</button>
-          <select multiple className={styles.sintomasSelect}>
-            {sintomas.map((sintoma, index) => (
-              <option key={index} value={sintoma}>{sintoma}</option>
-            ))}
-          </select>
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
@@ -112,4 +113,4 @@ const SinaisSintomas: React.FC = () => {
   );
 };
 
-export default SinaisSintomas;
+export default IndicacoesRastreio;

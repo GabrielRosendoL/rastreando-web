@@ -36,14 +36,24 @@ body {
   color: #f03f04;
 }
 
-.welcomeMessage {
-  font-family: 'Quicksand-Bold', sans-serif;
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #232d97;
+.formGroup {
+  margin-bottom: 15px;
 }
 
-.btn {
+.select, .textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.textarea {
+  height: 150px;
+  resize: none;
+}
+
+.btnSave, .btnEdit {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -52,9 +62,29 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
-.btn:hover {
+.btnSave:hover, .btnEdit:hover {
   background-color: #ff5721;
+}
+
+/* Spinner de loading */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #232d97;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

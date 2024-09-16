@@ -32,8 +32,16 @@ const TelaGerenciamento: React.FC = () => {
     fetchUserName();
   }, [db]);
 
-  const handleButtonClick = () => {
+  const handleButtonSinaisSintomas = () => {
     navigate('/sinaisSintomas');
+  };
+  
+  const handleButtonSinaisAlarmeFatoresRisco = () => {
+    navigate('/sinaisAlarmeFatoresRisco');
+  };
+  
+  const handleIndicacoesRastreio = () => {
+    navigate('/indicacoesRastreio');
   };
 
   return (
@@ -42,8 +50,14 @@ const TelaGerenciamento: React.FC = () => {
         <span className={styles.rastreando}>Rastreando</span> <span className={styles.app}>WEB</span>
       </h1>
       <h2 className={styles.welcomeMessage}>Bem-vindo, {userName}!</h2>
-      <button onClick={handleButtonClick} className={styles.btn}>
+      <button onClick={handleButtonSinaisSintomas} className={styles.btn}>
         Sinais e Sintomas
+      </button>
+      <button onClick={handleButtonSinaisAlarmeFatoresRisco} className={styles.btn}>
+        Sinais de Alerta e Fatores de Risco
+      </button>
+      <button onClick={handleIndicacoesRastreio} className={styles.btn}>
+        Indicações de Rastreio
       </button>
     </div>
   );

@@ -1,31 +1,66 @@
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './sinaisSintomas.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './sinaisAlarmeFatoresRisco.styles.module.css'; // Importa o CSS com o uso de módulos
 
-const SinaisSintomas: React.FC = () => {
+interface Sintoma {
+  descricao: string;
+  imagem: File | null;
+}
+
+const SinaisAlarmeFatoresRisco: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
-  const [sintomas, setSintomas] = useState<string[]>([]);
+  const [sintomas, setSintomas] = useState<Sintoma[]>([]);
   const [novoSintoma, setNovoSintoma] = useState<string>('');
+  const [novaImagem, setNovaImagem] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const imagemInputRef = useRef<HTMLInputElement | null>(null);
   const db = getFirestore();
+  const storage = getStorage();
   const navigate = useNavigate();
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
     setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
+    setSintomas([]); // Resetar sintomas ao mudar o sexo
   };
 
-  const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleNeoplasiaChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setNeoplasia(event.target.value);
+    if (sexo && event.target.value) {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${event.target.value}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSintomas(data.sintomas || []);
+        } else {
+          setSintomas([]);
+        }
+      }
+    }
   };
 
   const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '') {
-      setSintomas([...sintomas, novoSintoma]);
+    if (novoSintoma.trim() !== '' && novaImagem) {
+      setSintomas([...sintomas, { descricao: novoSintoma, imagem: novaImagem }]);
       setNovoSintoma('');
+      setNovaImagem(null);
+      if (imagemInputRef.current) {
+        imagemInputRef.current.value = '';
+      }
+    } else {
+      alert('Por favor, preencha o sintoma e selecione uma imagem.');
+    }
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setNovaImagem(event.target.files[0]);
     }
   };
 
@@ -33,11 +68,21 @@ const SinaisSintomas: React.FC = () => {
     setLoading(true);
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'sinaisSintomas', user.uid);
+      const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+      const sintomasComUrls = await Promise.all(
+        sintomas.map(async (sintoma) => {
+          if (sintoma.imagem) {
+            const storageRef = ref(storage, `images/${user.uid}/${sintoma.imagem.name}`);
+            const uploadTask = await uploadBytesResumable(storageRef, sintoma.imagem);
+            const imageUrl = await getDownloadURL(uploadTask.ref);
+            return { descricao: sintoma.descricao, imagem: imageUrl };
+          }
+          return sintoma;
+        })
+      );
+
       await setDoc(docRef, {
-        sexo,
-        neoplasia,
-        sintomas,
+        sintomas: sintomasComUrls,
       });
       navigate(-1); // Redireciona para a página anterior
     } else {
@@ -45,14 +90,14 @@ const SinaisSintomas: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   const handleEdit = () => {
-    navigate('/editarSinaisSintomas');
+    navigate('/editarSinaisAlarmeFatoresRisco');
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Cadastrar Sinais e Sintomas</h1>
+      <h1 className={styles.title}>Cadastrar Sinais de Alarme e Fatores de Risco</h1>
       <div className={styles.formGroup}>
         <label>Sexo:</label>
         <select value={sexo || ''} onChange={handleSexoChange} className={styles.select}>
@@ -93,10 +138,16 @@ const SinaisSintomas: React.FC = () => {
             onChange={(e) => setNovoSintoma(e.target.value)}
             className={styles.input}
           />
+          <input
+            type="file"
+            onChange={handleImageChange}
+            className={styles.input}
+            ref={imagemInputRef}
+          />
           <button onClick={handleAddSintoma} className={styles.btnAdd}>Adicionar</button>
           <select multiple className={styles.sintomasSelect}>
             {sintomas.map((sintoma, index) => (
-              <option key={index} value={sintoma}>{sintoma}</option>
+              <option key={index} value={sintoma.descricao}>{sintoma.descricao}</option>
             ))}
           </select>
         </div>
@@ -112,4 +163,4 @@ const SinaisSintomas: React.FC = () => {
   );
 };
 
-export default SinaisSintomas;
+export default SinaisAlarmeFatoresRisco;
