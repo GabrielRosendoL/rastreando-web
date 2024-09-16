@@ -27,12 +27,15 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  overflow: hidden;
 }
 
 .title {
   font-family: 'Quicksand-Bold', sans-serif;
-  font-size: 32px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 15px;
   color: #f03f04;
 }
 
@@ -85,13 +88,13 @@ body {
 }
 
 .sintomasSelect::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #f03f04;
   border-radius: 10px;
   border: 3px solid #f1f1f1;
 }
 
 .sintomasSelect::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #f03f04;
 }
 
 /* Spinner de loading */

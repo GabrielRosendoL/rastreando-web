@@ -30,6 +30,10 @@ const TelaCadastro: React.FC = () => {
       setError('Erro ao criar conta: ' + (error as any).message);
     }
   };
+  
+  const handleTelaLogin = () => {
+    navigate('/telaLogin');
+  };
 
   return (
     <div className={styles.container}>
@@ -72,6 +76,7 @@ const TelaCadastro: React.FC = () => {
         </div>
         {error && <p className={styles.errorMessage}>{error}</p>}
         <button type="submit" className={styles.btn}>Cadastrar</button>
+        <button type="submit" className={styles.btnLogin} onClick={handleTelaLogin}>Voltar</button>
       </form>
     </div>
   );

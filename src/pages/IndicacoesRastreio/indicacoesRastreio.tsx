@@ -106,9 +106,9 @@ const IndicacoesRastreio: React.FC = () => {
         {loading ? 'Salvando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
-      <button onClick={handleEdit} className={styles.btnEdit}>
+      {/* <button onClick={handleEdit} className={styles.btnEdit}>
         <span>Editar</span>
-      </button>
+      </button> */}
     </div>
   );
 };

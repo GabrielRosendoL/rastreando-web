@@ -1,6 +1,6 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import styles from './sinaisAlarmeFatoresRisco.styles.module.css'; // Importa o CSS com o uso de módulos
@@ -21,6 +21,23 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const db = getFirestore();
   const storage = getStorage();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = auth.currentUser;
+      if (user && sexo && neoplasia) {
+        const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSintomas(data.sintomas || []);
+        } else {
+          setSintomas([]);
+        }
+      }
+    };
+    fetchData();
+  }, [sexo, neoplasia, db]);
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
@@ -46,7 +63,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   };
 
   const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '' && novaImagem) {
+    if (novoSintoma.trim() !== '' && novaImagem && !sintomas.some(s => s.descricao === novoSintoma)) {
       setSintomas([...sintomas, { descricao: novoSintoma, imagem: novaImagem }]);
       setNovoSintoma('');
       setNovaImagem(null);
@@ -69,9 +86,19 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+      const docSnap = await getDoc(docRef);
+      let sintomasExistentes: Sintoma[] = [];
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        sintomasExistentes = data.sintomas || [];
+      }
+
+      const novosSintomas = sintomas.filter(sintoma => !sintomasExistentes.some(s => s.descricao === sintoma.descricao));
+      const todosSintomas = [...sintomasExistentes, ...novosSintomas];
+
       const sintomasComUrls = await Promise.all(
-        sintomas.map(async (sintoma) => {
-          if (sintoma.imagem) {
+        todosSintomas.map(async (sintoma) => {
+          if (sintoma.imagem instanceof File) {
             const storageRef = ref(storage, `images/${user.uid}/${sintoma.imagem.name}`);
             const uploadTask = await uploadBytesResumable(storageRef, sintoma.imagem);
             const imageUrl = await getDownloadURL(uploadTask.ref);

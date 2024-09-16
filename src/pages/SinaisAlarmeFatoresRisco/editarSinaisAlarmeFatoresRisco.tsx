@@ -112,7 +112,6 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
     }
     setLoading(false);
   };
-  
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

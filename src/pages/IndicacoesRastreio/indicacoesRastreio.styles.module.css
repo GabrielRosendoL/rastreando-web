@@ -1,3 +1,5 @@
+/* indicacoesRastreio.styles.module.css */
+
 @font-face {
   font-family: 'Quicksand-Bold';
   src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
@@ -14,8 +16,8 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start; /* Alinha o container no topo */
+  min-height: 100vh;
   background-color: #232d97;
 }
 
@@ -27,6 +29,9 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  overflow: hidden;
 }
 
 .title {
@@ -51,6 +56,27 @@ body {
 .textarea {
   height: 150px;
   resize: none;
+  overflow-y: auto;
+}
+
+/* Estilização da barra de rolagem */
+.textarea::-webkit-scrollbar {
+  width: 12px;
+}
+
+.textarea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background: #f03f04;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+.textarea::-webkit-scrollbar-thumb:hover {
+  background: #f03f04;
 }
 
 .btnSave, .btnEdit {

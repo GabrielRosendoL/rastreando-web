@@ -18,13 +18,11 @@ const EditarSinaisSintomas: React.FC = () => {
     const fetchData = async () => {
       const user = auth.currentUser;
       if (user && sexo && neoplasia) {
-        const docRef = doc(db, 'sinaisSintomas', user.uid);
+        const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setSexo(data.sexo);
-          setNeoplasia(data.neoplasia);
-          setSintomas(data.sintomas);
+          setSintomas(data.sintomas || []);
         }
       }
     };
@@ -34,6 +32,7 @@ const EditarSinaisSintomas: React.FC = () => {
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
     setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
+    setSintomas([]); // Resetar sintomas ao mudar o sexo
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -68,10 +67,8 @@ const EditarSinaisSintomas: React.FC = () => {
     setLoading(true);
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'sinaisSintomas', user.uid);
+      const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
       await setDoc(docRef, {
-        sexo,
-        neoplasia,
         sintomas,
       });
       navigate(-1); // Redireciona para a página anterior

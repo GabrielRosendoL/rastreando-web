@@ -1,3 +1,5 @@
+/* sinaisAlarmeFatoresRisco.styles.module.css */
+
 @font-face {
   font-family: 'Quicksand-Bold';
   src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
@@ -14,8 +16,8 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start; /* Alinha o container no topo */
+  min-height: 100vh;
   background-color: #232d97;
 }
 
@@ -27,12 +29,15 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  margin-top: 80px;
+  margin-bottom: 20px;
+  overflow: hidden;
 }
 
 .title {
   font-family: 'Quicksand-Bold', sans-serif;
-  font-size: 32px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 15px;
   color: #f03f04;
 }
 
@@ -85,13 +90,13 @@ body {
 }
 
 .sintomasSelect::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #f03f04;
   border-radius: 10px;
   border: 3px solid #f1f1f1;
 }
 
 .sintomasSelect::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #f03f04;
 }
 
 /* Spinner de loading */

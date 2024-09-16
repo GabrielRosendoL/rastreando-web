@@ -1,95 +1,141 @@
+/* editarSinaisAlarmeFatoresRisco.styles.module.css */
+
 @font-face {
-    font-family: 'Quicksand-Bold';
-    src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
+  font-family: 'Quicksand-Bold';
+  src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Quicksand-Medium';
+  src: url('../../assets/fonts/Quicksand-Medium.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand-Medium', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinha o container no topo */
+  min-height: 100vh;
+  background-color: #232d97;
+}
+
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 80px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.title {
+  font-family: 'Quicksand-Bold', sans-serif;
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #f03f04;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.select, .input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btnAdd, .btnSave, .btnEdit, .btnRemove {
+  width: 100%;
+  padding: 10px;
+  background-color: #232d97;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.btnAdd:hover, .btnSave:hover, .btnEdit:hover, .btnRemove:hover {
+  background-color: #ff5721;
+}
+
+.btnEdit, .btnRemove {
+  width: 28%; /* Ajuste a largura para que os botões fiquem lado a lado */
+  font-size: 14px;
+}
+
+.btnEdit {
+  margin-right: 4%; /* Espaçamento entre os botões */
+}
+
+.scrollContainer {
+  max-height: 200px; /* Altura máxima da div com barra de rolagem */
+  overflow-y: auto;
+}
+
+/* Estilização da barra de rolagem */
+.scrollContainer::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: #ff5721;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  background: #ff5721;
+}
+
+/* Spinner de loading */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #232d97;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  @font-face {
-    font-family: 'Quicksand-Medium';
-    src: url('../../assets/fonts/Quicksand-Medium.ttf') format('truetype');
+  100% {
+    transform: rotate(360deg);
   }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Quicksand-Medium', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #232d97;
-  }
-  
-  .container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  
-  .title {
-    font-family: 'Quicksand-Bold', sans-serif;
-    font-size: 32px;
-    margin-bottom: 20px;
-    color: #f03f04;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .select, .input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .btnAdd, .btnSave {
-    width: 100%;
-    padding: 10px;
-    background-color: #232d97;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  .btnAdd:hover, .btnSave:hover {
-    background-color: #ff5721;
-  }
-  
-  .sintomasSelect {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 100px;
-    overflow-y: auto;
-  }
-  
-  /* Estilização da barra de rolagem */
-  .sintomasSelect::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  .sintomasSelect::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-  
-  .sintomasSelect::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-    border: 3px solid #f1f1f1;
-  }
-  
-  .sintomasSelect::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+}
+
+.imagem {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}

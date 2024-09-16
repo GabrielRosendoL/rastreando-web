@@ -1,5 +1,5 @@
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import styles from './sinaisSintomas.styles.module.css'; // Importa o CSS com o uso de módulos
@@ -13,9 +13,27 @@ const SinaisSintomas: React.FC = () => {
   const db = getFirestore();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = auth.currentUser;
+      if (user && sexo && neoplasia) {
+        const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSintomas(data.sintomas || []);
+        } else {
+          setSintomas([]);
+        }
+      }
+    };
+    fetchData();
+  }, [sexo, neoplasia, db]);
+
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
     setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
+    setSintomas([]); // Resetar sintomas ao mudar o sexo
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -23,7 +41,7 @@ const SinaisSintomas: React.FC = () => {
   };
 
   const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '') {
+    if (novoSintoma.trim() !== '' && !sintomas.includes(novoSintoma)) {
       setSintomas([...sintomas, novoSintoma]);
       setNovoSintoma('');
     }
@@ -33,11 +51,19 @@ const SinaisSintomas: React.FC = () => {
     setLoading(true);
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'sinaisSintomas', user.uid);
+      const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+      const docSnap = await getDoc(docRef);
+      let sintomasExistentes: string[] = [];
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        sintomasExistentes = data.sintomas || [];
+      }
+
+      const novosSintomas = sintomas.filter(sintoma => !sintomasExistentes.includes(sintoma));
+      const todosSintomas = [...sintomasExistentes, ...novosSintomas];
+
       await setDoc(docRef, {
-        sexo,
-        neoplasia,
-        sintomas,
+        sintomas: todosSintomas,
       });
       navigate(-1); // Redireciona para a página anterior
     } else {
@@ -45,7 +71,7 @@ const SinaisSintomas: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   const handleEdit = () => {
     navigate('/editarSinaisSintomas');
   };
