@@ -77,7 +77,6 @@ body {
   overflow-y: auto;
 }
 
-/* Estilização da barra de rolagem */
 .sintomasSelect::-webkit-scrollbar {
   width: 12px;
 }
@@ -97,7 +96,6 @@ body {
   background: #f03f04;
 }
 
-/* Spinner de loading */
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #232d97;

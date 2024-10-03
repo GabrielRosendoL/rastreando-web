@@ -3,7 +3,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './editarSinaisAlarmeFatoresRisco.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './editarSinaisAlarmeFatoresRisco.styles.module.css';
 
 interface Imagem {
   descricao: string;
@@ -31,7 +31,7 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setSintomas(data.sintomas || []); // Certifique-se de que `data.sintomas` é uma lista de objetos com `descricao` e `imagem`
+          setSintomas(data.sintomas || []);
         }
       }
     };
@@ -40,8 +40,8 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
-    setSintomas([]); // Resetar sintomas ao mudar o sexo
+    setNeoplasia(null); 
+    setSintomas([]); 
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -87,7 +87,6 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
       
-      // Atualize apenas o sintoma em edição, sem modificar todos.
       const sintomasAtualizados = [...sintomas];
       if (editandoSintoma !== null && novaImagemArquivo) {
         const storageRef = ref(storage, `imagens/${novaImagemArquivo.name}`);
@@ -95,18 +94,16 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
         const url = await getDownloadURL(storageRef);
         sintomasAtualizados[editandoSintoma] = { descricao: novoSintoma, imagem: url };
       } else if (editandoSintoma !== null) {
-        sintomasAtualizados[editandoSintoma].descricao = novoSintoma; // Atualiza apenas a descrição se não houver nova imagem
+        sintomasAtualizados[editandoSintoma].descricao = novoSintoma; 
       }
   
-      // Salva as modificações no Firestore
       await setDoc(docRef, { sintomas: sintomasAtualizados });
       
-      // Reseta os estados
       setEditandoSintoma(null);
       setNovoSintoma('');
       setNovaImagemDescricao('');
       setNovaImagemArquivo(null);
-      navigate(-1); // Redireciona para a página anterior
+      navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');
     }

@@ -2,7 +2,7 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './telaGerenciamento.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './telaGerenciamento.styles.module.css';
 
 const TelaGerenciamento: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);

@@ -2,7 +2,7 @@ import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './editarSinaisSintomas.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './editarSinaisSintomas.styles.module.css';
 
 const EditarSinaisSintomas: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
@@ -31,8 +31,8 @@ const EditarSinaisSintomas: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
-    setSintomas([]); // Resetar sintomas ao mudar o sexo
+    setNeoplasia(null);
+    setSintomas([]);
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -71,7 +71,7 @@ const EditarSinaisSintomas: React.FC = () => {
       await setDoc(docRef, {
         sintomas,
       });
-      navigate(-1); // Redireciona para a página anterior
+      navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');
     }

@@ -18,13 +18,11 @@ const TelaCadastro: React.FC = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
       const user = userCredential.user;
       
-      // Adicionar o usuário ao Firestore com o uid como ID do documento
       await setDoc(doc(db, 'administradores', user.uid), {
         email: user.email,
         nome,
       });
 
-      // Redirecionar para a tela de login
       navigate('/telaLogin');
     } catch (error) {
       setError('Erro ao criar conta: ' + (error as any).message);

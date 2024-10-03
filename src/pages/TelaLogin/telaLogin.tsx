@@ -2,7 +2,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './telaLogin.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './telaLogin.styles.module.css';
 
 const TelaLogin: React.FC = () => {
   const [email, setEmail] = useState('');

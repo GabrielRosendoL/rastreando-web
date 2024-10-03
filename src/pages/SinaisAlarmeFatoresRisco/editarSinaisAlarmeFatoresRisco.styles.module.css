@@ -1,5 +1,3 @@
-/* editarSinaisAlarmeFatoresRisco.styles.module.css */
-
 @font-face {
   font-family: 'Quicksand-Bold';
   src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
@@ -16,7 +14,7 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Alinha o container no topo */
+  align-items: flex-start;
   min-height: 100vh;
   background-color: #232d97;
 }
@@ -70,20 +68,19 @@ body {
 }
 
 .btnEdit, .btnRemove {
-  width: 28%; /* Ajuste a largura para que os botões fiquem lado a lado */
+  width: 28%;
   font-size: 14px;
 }
 
 .btnEdit {
-  margin-right: 4%; /* Espaçamento entre os botões */
+  margin-right: 4%; 
 }
 
 .scrollContainer {
-  max-height: 200px; /* Altura máxima da div com barra de rolagem */
+  max-height: 200px; 
   overflow-y: auto;
 }
 
-/* Estilização da barra de rolagem */
 .scrollContainer::-webkit-scrollbar {
   width: 12px;
 }
@@ -103,7 +100,6 @@ body {
   background: #ff5721;
 }
 
-/* Spinner de loading */
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #232d97;

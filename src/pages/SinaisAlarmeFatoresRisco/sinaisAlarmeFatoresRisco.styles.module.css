@@ -1,5 +1,3 @@
-/* sinaisAlarmeFatoresRisco.styles.module.css */
-
 @font-face {
   font-family: 'Quicksand-Bold';
   src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
@@ -16,7 +14,7 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Alinha o container no topo */
+  align-items: flex-start;
   min-height: 100vh;
   background-color: #232d97;
 }
@@ -79,7 +77,6 @@ body {
   overflow-y: auto;
 }
 
-/* Estilização da barra de rolagem */
 .sintomasSelect::-webkit-scrollbar {
   width: 12px;
 }
@@ -99,7 +96,6 @@ body {
   background: #f03f04;
 }
 
-/* Spinner de loading */
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #232d97;

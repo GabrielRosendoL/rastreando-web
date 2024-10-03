@@ -11,9 +11,6 @@ import TelaCadastro from './pages/TelaCadastro/telaCadastro';
 import TelaGerenciamento from './pages/TelaGerenciamento/telaGerenciamento';
 import TelaLogin from './pages/TelaLogin/telaLogin';
 
-
-
-
 const theme = createTheme({
   palette: {
     mode: 'light',

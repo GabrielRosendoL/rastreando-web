@@ -2,7 +2,7 @@ import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import styles from './editarIndicacoesRastreio.styles.module.css'; // Importa o CSS com o uso de módulos
+import styles from './editarIndicacoesRastreio.styles.module.css';
 
 const EditarIndicacoesRastreio: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
@@ -33,15 +33,15 @@ const EditarIndicacoesRastreio: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); // Resetar neoplasia ao mudar o sexo
-    setTexto(''); // Resetar texto ao mudar o sexo
-    setMensagem(''); // Resetar mensagem ao mudar o sexo
+    setNeoplasia(null);
+    setTexto(''); 
+    setMensagem(''); 
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setNeoplasia(event.target.value);
-    setTexto(''); // Resetar texto ao mudar a neoplasia
-    setMensagem(''); // Resetar mensagem ao mudar a neoplasia
+    setTexto(''); 
+    setMensagem(''); 
   };
 
   const handleSave = async () => {
@@ -54,7 +54,7 @@ const EditarIndicacoesRastreio: React.FC = () => {
         neoplasia,
         texto,
       });
-      navigate(-1); // Redireciona para a página anterior
+      navigate(-1); 
     } else {
       alert('Por favor, preencha todos os campos.');
     }
