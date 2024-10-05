@@ -1,5 +1,3 @@
-/* indicacoesRastreio.styles.module.css */
-
 @font-face {
   font-family: 'Quicksand-Bold';
   src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
@@ -16,7 +14,7 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start; 
+  align-items: flex-start;
   min-height: 100vh;
   background-color: #232d97;
 }
@@ -29,9 +27,29 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
-  margin-top: 40px;
   margin-bottom: 20px;
-  overflow: hidden;
+  margin-top: 20px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+/* Estilo da barra de rolagem */
+.container::-webkit-scrollbar {
+  width: 8px; /* Define a largura da barra de rolagem */
+}
+
+.container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+  border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #f03f04; /* Cor da barra de rolagem */
+  border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #e03a02; /* Cor ao passar o mouse */
 }
 
 .title {
@@ -45,7 +63,8 @@ body {
   margin-bottom: 15px;
 }
 
-.select, .textarea {
+.select,
+.textarea {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
@@ -78,7 +97,8 @@ body {
   background: #f03f04;
 }
 
-.btnSave, .btnEdit {
+.btnSave,
+.btnEdit {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -90,7 +110,8 @@ body {
   margin-top: 10px;
 }
 
-.btnSave:hover, .btnEdit:hover {
+.btnSave:hover,
+.btnEdit:hover {
   background-color: #ff5721;
 }
 
@@ -108,6 +129,7 @@ body {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

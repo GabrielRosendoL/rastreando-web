@@ -44,6 +44,15 @@ const TelaGerenciamento: React.FC = () => {
     navigate('/indicacoesRastreio');
   };
 
+  const handleMarqueConsulta = () => {
+    navigate('/marqueConsulta');
+  };
+
+  // Função para o novo botão "Conduta e Manejo após Resultado"
+  const handleCondutaManejoResultado = () => {
+    navigate('/condutaManejoResultado');
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>
@@ -58,6 +67,12 @@ const TelaGerenciamento: React.FC = () => {
       </button>
       <button onClick={handleIndicacoesRastreio} className={styles.btn}>
         Indicações de Rastreio
+      </button>
+      <button onClick={handleMarqueConsulta} className={styles.btn}>
+        Marque uma Consulta
+      </button>
+      <button onClick={handleCondutaManejoResultado} className={styles.btn}>
+        Conduta e Manejo após Resultado
       </button>
     </div>
   );

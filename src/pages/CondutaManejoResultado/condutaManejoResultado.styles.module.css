@@ -17,6 +17,7 @@
     align-items: center;
     height: 100vh;
     background-color: #232d97;
+    overflow: hidden; /* Evitar scroll duplicado no body */
   }
   
   .container {
@@ -27,6 +28,29 @@
     width: 100%;
     max-width: 400px;
     text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+  
+  /* Estilo da barra de rolagem */
+  .container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .container::-webkit-scrollbar-thumb {
+    background: #f03f04;
+    border-radius: 10px;
+  }
+  
+  .container::-webkit-scrollbar-thumb:hover {
+    background: #e03a02;
   }
   
   .title {
@@ -40,7 +64,7 @@
     margin-bottom: 15px;
   }
   
-  .select, .textarea {
+  .input, .select {
     width: 100%;
     padding: 10px;
     margin-top: 8px;
@@ -48,12 +72,53 @@
     border-radius: 5px;
   }
   
-  .textarea {
-    height: 150px;
-    resize: none;
+  .scrollView {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 20px;
   }
   
-  .btnSave {
+  .scrollView::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scrollView::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .scrollView::-webkit-scrollbar-thumb {
+    background: #f03f04;
+    border-radius: 10px;
+  }
+  
+  .scrollView::-webkit-scrollbar-thumb:hover {
+    background: #e03a02;
+  }
+  
+  .itemList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .item {
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+  }
+  
+  .item a {
+    color: #232d97;
+    text-decoration: none;
+  }
+  
+  .item a:hover {
+    text-decoration: underline;
+  }
+  
+  .btnAdd, .btnSave, .btnEdit {
     width: 100%;
     padding: 10px;
     background-color: #232d97;
@@ -65,13 +130,8 @@
     margin-top: 10px;
   }
   
-  .btnSave:hover {
+  .btnAdd:hover, .btnSave:hover, .btnEdit:hover {
     background-color: #ff5721;
-  }
-  
-  .mensagem {
-    margin-top: 10px;
-    color: red;
   }
   
   .spinner {
@@ -92,3 +152,4 @@
       transform: rotate(360deg);
     }
   }
+  

@@ -40,8 +40,8 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); 
-    setSintomas([]); 
+    setNeoplasia(null);
+    setSintomas([]);
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -86,7 +86,7 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-      
+
       const sintomasAtualizados = [...sintomas];
       if (editandoSintoma !== null && novaImagemArquivo) {
         const storageRef = ref(storage, `imagens/${novaImagemArquivo.name}`);
@@ -94,11 +94,11 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
         const url = await getDownloadURL(storageRef);
         sintomasAtualizados[editandoSintoma] = { descricao: novoSintoma, imagem: url };
       } else if (editandoSintoma !== null) {
-        sintomasAtualizados[editandoSintoma].descricao = novoSintoma; 
+        sintomasAtualizados[editandoSintoma].descricao = novoSintoma;
       }
-  
+
       await setDoc(docRef, { sintomas: sintomasAtualizados });
-      
+
       setEditandoSintoma(null);
       setNovoSintoma('');
       setNovaImagemDescricao('');

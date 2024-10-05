@@ -14,9 +14,10 @@ body {
   font-family: 'Quicksand-Medium', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
+  align-items: center;
+  height: 100vh;
   background-color: #232d97;
+  overflow: hidden; /* Evitar scroll duplicado no body */
 }
 
 .container {
@@ -27,9 +28,29 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
-  margin-top: 80px;
   margin-bottom: 20px;
-  overflow: hidden;
+  margin-top: 20px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+/* Estilo da barra de rolagem */
+.container::-webkit-scrollbar {
+  width: 8px; /* Define a largura da barra de rolagem */
+}
+
+.container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+  border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #f03f04; /* Cor da barra de rolagem */
+  border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #e03a02; /* Cor ao passar o mouse */
 }
 
 .title {

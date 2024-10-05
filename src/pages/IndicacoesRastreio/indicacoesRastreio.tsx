@@ -42,12 +42,18 @@ const IndicacoesRastreio: React.FC = () => {
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'indicacoesRastreio', `${user.uid}_${sexo}_${neoplasia}`);
-      await setDoc(docRef, {
-        sexo,
-        neoplasia,
-        texto,
-      });
-      navigate(-1); 
+      try {
+        await setDoc(docRef, {
+          sexo,
+          neoplasia,
+          texto,
+        });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
+      } catch (error) {
+        console.error('Erro ao salvar os dados no Firebase:', error);
+        alert('Erro ao salvar os dados!');
+      }
+      navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');
     }
