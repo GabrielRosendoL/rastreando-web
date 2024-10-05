@@ -108,9 +108,16 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
         })
       );
 
-      await setDoc(docRef, {
-        sintomas: sintomasComUrls,
-      });
+      try {
+        await setDoc(docRef, {
+          sintomas: sintomasComUrls,
+        });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
+      } catch (error) {
+        console.error('Erro ao salvar os dados no Firebase:', error);
+        alert('Erro ao salvar os dados!');
+      }
+      
       navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');

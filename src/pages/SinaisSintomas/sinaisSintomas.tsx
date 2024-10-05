@@ -62,9 +62,15 @@ const SinaisSintomas: React.FC = () => {
       const novosSintomas = sintomas.filter(sintoma => !sintomasExistentes.includes(sintoma));
       const todosSintomas = [...sintomasExistentes, ...novosSintomas];
 
-      await setDoc(docRef, {
-        sintomas: todosSintomas,
-      });
+      try {
+        await setDoc(docRef, {
+          sintomas: todosSintomas,
+        });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
+      } catch (error) {
+        console.error('Erro ao salvar os dados no Firebase:', error);
+        alert('Erro ao salvar os dados!');
+      }
       navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');

@@ -97,7 +97,13 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
         sintomasAtualizados[editandoSintoma].descricao = novoSintoma;
       }
 
-      await setDoc(docRef, { sintomas: sintomasAtualizados });
+      try {
+        await setDoc(docRef, { sintomas: sintomasAtualizados });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
+      } catch (error) {
+        console.error('Erro ao salvar os dados no Firebase:', error);
+        alert('Erro ao salvar os dados!');
+      }
 
       setEditandoSintoma(null);
       setNovoSintoma('');

@@ -68,9 +68,15 @@ const EditarSinaisSintomas: React.FC = () => {
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-      await setDoc(docRef, {
-        sintomas,
-      });
+      try {
+        await setDoc(docRef, {
+          sintomas,
+        });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
+      } catch (error) {
+        console.error('Erro ao salvar os dados no Firebase:', error);
+        alert('Erro ao salvar os dados!');
+      }
       navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');
