@@ -99,6 +99,24 @@ body {
   list-style: none;
 }
 
+/* Estilo personalizado da barra de rolagem */
+.sintomasList::-webkit-scrollbar {
+  width: 6px; /* Define a largura da barra de rolagem */
+}
+
+.sintomasList::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+}
+
+.sintomasList::-webkit-scrollbar-thumb {
+  background: #f03f04; /* Cor da barra de rolagem */
+  border-radius: 10px;
+}
+
+.sintomasList::-webkit-scrollbar-thumb:hover {
+  background: #e03a02; /* Cor ao passar o mouse */
+}
+
 /* Flex layout para os itens */
 .sintomaItem {
   display: flex;
@@ -122,14 +140,14 @@ body {
   background-color: #232d97;
   color: white;
   border: none;
-  padding: 0; /* Remove padding para garantir que os ícones sejam centralizados */
+  padding: 0;
   border-radius: 3px;
   cursor: pointer;
   font-size: 14px;
-  height: 32px; /* Definindo altura fixa */
+  height: 32px;
   display: flex;
   justify-content: center;
-  align-items: center; /* Centraliza o ícone verticalmente */
+  align-items: center;
 }
 
 .btnEdit:hover {

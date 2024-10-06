@@ -6,7 +6,6 @@ import IndicacoesRastreio from './pages/IndicacoesRastreio/indicacoesRastreio';
 import MarqueConsulta from './pages/MarqueConsulta/marqueConsulta';
 import EditarSinaisAlarmeFatoresRisco from './pages/SinaisAlarmeFatoresRisco/editarSinaisAlarmeFatoresRisco';
 import SinaisAlarmeFatoresRisco from './pages/SinaisAlarmeFatoresRisco/sinaisAlarmeFatoresRisco';
-import EditarSinaisSintomas from './pages/SinaisSintomas/editarSinaisSintomas';
 import SinaisSintomas from './pages/SinaisSintomas/sinaisSintomas';
 import TelaCadastro from './pages/TelaCadastro/telaCadastro';
 import TelaGerenciamento from './pages/TelaGerenciamento/telaGerenciamento';
@@ -35,7 +34,6 @@ function App() {
             <Route path="/marqueConsulta" element={<MarqueConsulta />} />
             <Route path="/condutaManejoResultado" element={<CondutaManejoResultado />} />
             <Route path="/editarSinaisAlarmeFatoresRisco" element={<EditarSinaisAlarmeFatoresRisco />} />
-            <Route path="/editarSinaisSintomas" element={<EditarSinaisSintomas />} />
           </Routes>
         </div>
       </Router>
