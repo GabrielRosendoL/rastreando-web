@@ -13,11 +13,12 @@ const MarqueConsulta: React.FC = () => {
   const [novoLocal, setNovoLocal] = useState<Local>({ nome: '', link: '', telefone: '' });
   const [locais, setLocais] = useState<Local[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // Usando o estado 'loading' para busca
   const db = getFirestore();
 
   // Função para buscar os locais do Firebase para todos os administradores
   const fetchLocais = async (sexoAtual: string) => {
+    setLoading(true); // Inicia o loading
     const adminCollectionRef = collection(db, 'administradores');
     const adminSnapshots = await getDocs(adminCollectionRef);
     const locaisEncontrados: Local[] = [];
@@ -36,6 +37,7 @@ const MarqueConsulta: React.FC = () => {
     }
 
     setLocais(locaisEncontrados);
+    setLoading(false); // Finaliza o loading
   };
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const MarqueConsulta: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoading(true); // Inicia o loading ao salvar
     // Obter todos os IDs dos administradores para salvar os locais
     const adminCollectionRef = collection(db, 'administradores');
     const adminSnapshots = await getDocs(adminCollectionRef);
@@ -93,7 +95,7 @@ const MarqueConsulta: React.FC = () => {
     }
 
     alert('Sucesso!');
-    setLoading(false);
+    setLoading(false); // Finaliza o loading ao salvar
   };
 
   return (
@@ -109,58 +111,64 @@ const MarqueConsulta: React.FC = () => {
         </select>
       </div>
 
-      <div className={styles.formGroup}>
-        <label>Nome do Local:</label>
-        <input
-          type="text"
-          value={novoLocal.nome}
-          onChange={(e) => setNovoLocal({ ...novoLocal, nome: e.target.value })}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.formGroup}>
-        <label>Link:</label>
-        <input
-          type="text"
-          value={novoLocal.link}
-          onChange={(e) => setNovoLocal({ ...novoLocal, link: e.target.value })}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.formGroup}>
-        <label>Telefone:</label>
-        <input
-          type="text"
-          value={novoLocal.telefone}
-          onChange={(e) => setNovoLocal({ ...novoLocal, telefone: e.target.value })}
-          className={styles.input}
-        />
-      </div>
+      {loading ? (
+        <div className={styles.spinner}></div> // Spinner enquanto carrega
+      ) : (
+        <>
+          <div className={styles.formGroup}>
+            <label>Nome do Local:</label>
+            <input
+              type="text"
+              value={novoLocal.nome}
+              onChange={(e) => setNovoLocal({ ...novoLocal, nome: e.target.value })}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Link:</label>
+            <input
+              type="text"
+              value={novoLocal.link}
+              onChange={(e) => setNovoLocal({ ...novoLocal, link: e.target.value })}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Telefone:</label>
+            <input
+              type="text"
+              value={novoLocal.telefone}
+              onChange={(e) => setNovoLocal({ ...novoLocal, telefone: e.target.value })}
+              className={styles.input}
+            />
+          </div>
 
-      <button onClick={handleAddLocal} className={styles.btnAdd}>
-        {editandoIndex !== null ? 'Atualizar' : 'Adicionar'}
-      </button>
+          <button onClick={handleAddLocal} className={styles.btnAdd}>
+            {editandoIndex !== null ? 'Atualizar' : 'Adicionar'}
+          </button>
 
-      {locais.length > 0 && (
-        <div className={styles.scrollView}>
-          <h3>Locais Cadastrados:</h3>
-          <ul className={styles.localList}>
-            {locais.map((local, index) => (
-              <li key={index} className={styles.localItem}>
-                <strong>Nome:</strong> {local.nome} <br />
-                <strong>Link:</strong> <a href={local.link} target="_blank" rel="noopener noreferrer">{local.link}</a> <br />
-                <strong>Telefone:</strong> {local.telefone}
-                <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>Editar</button>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {locais.length > 0 && (
+            <div className={styles.scrollView}>
+              <h3>Locais Cadastrados:</h3>
+              <ul className={styles.localList}>
+                {locais.map((local, index) => (
+                  <li key={index} className={styles.localItem}>
+                    <strong>Nome:</strong> {local.nome} <br />
+                    <strong>Link:</strong> <a href={local.link} target="_blank" rel="noopener noreferrer">{local.link}</a> <br />
+                    <strong>Telefone:</strong> {local.telefone}
+                    <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>Editar</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
+            {loading ? 'Carregando...' : 'Salvar Locais'}
+          </button>
+        </>
       )}
-
-      <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
-        {loading ? 'Salvando...' : 'Salvar Locais'}
-      </button>
-      {loading && <div className={styles.spinner}></div>}
+      {/* {loading && <div className={styles.spinner}></div>} */}
     </div>
   );
 };

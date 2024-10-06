@@ -1,19 +1,18 @@
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './indicacoesRastreio.styles.module.css';
 
 const IndicacoesRastreio: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
   const [texto, setTexto] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // Adicionando estado de loading
   const db = getFirestore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       if (sexo && neoplasia) {
+        setLoading(true); // Ativando o loading antes de buscar dados
         // Obter todos os IDs dos administradores
         const adminCollectionRef = collection(db, 'administradores');
         const adminSnapshots = await getDocs(adminCollectionRef);
@@ -29,6 +28,7 @@ const IndicacoesRastreio: React.FC = () => {
             break; // Se encontrou um documento, interrompe o loop
           }
         }
+        setLoading(false); // Desativando o loading após buscar dados
       }
     };
     fetchData();
@@ -46,7 +46,7 @@ const IndicacoesRastreio: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoading(true); // Ativando o loading durante o salvamento
     if (sexo && neoplasia) {
       // Obter todos os IDs dos administradores
       const adminCollectionRef = collection(db, 'administradores');
@@ -69,11 +69,11 @@ const IndicacoesRastreio: React.FC = () => {
         }
       }
 
-      navigate(-1);
+      setLoading(false); // Desativando o loading após o salvamento
     } else {
       alert('Por favor, preencha todos os campos.');
+      setLoading(false); // Desativando o loading caso falhe
     }
-    setLoading(false);
   };
 
   return (
@@ -121,9 +121,9 @@ const IndicacoesRastreio: React.FC = () => {
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
-        {loading ? 'Salvando...' : 'Salvar'}
+        {loading ? 'Carregando...' : 'Salvar'}
       </button>
-      {loading && <div className={styles.spinner}></div>}
+      {loading && <div className={styles.spinner}></div>} {/* Exibe o spinner durante o loading */}
     </div>
   );
 };

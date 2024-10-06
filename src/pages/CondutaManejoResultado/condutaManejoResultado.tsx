@@ -13,11 +13,12 @@ const CondutaManejoResultado: React.FC = () => {
   const [novoItem, setNovoItem] = useState<Item>({ resultado: '', descricao: '' });
   const [itens, setItens] = useState<Item[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // Usando o estado 'loading'
   const db = getFirestore();
 
   // Função para buscar os itens do Firebase de todos os administradores
   const fetchItens = async (sexoAtual: string, neoplasiaAtual: string) => {
+    setLoading(true); // Inicia o loading
     const adminCollectionRef = collection(db, 'administradores');
     const adminSnapshots = await getDocs(adminCollectionRef);
     const itensEncontrados: Item[] = [];
@@ -36,6 +37,7 @@ const CondutaManejoResultado: React.FC = () => {
     }
 
     setItens(itensEncontrados);
+    setLoading(false); // Finaliza o loading
   };
 
   useEffect(() => {
@@ -136,51 +138,54 @@ const CondutaManejoResultado: React.FC = () => {
         </div>
       )}
 
-      {neoplasia && (
-        <>
-          <div className={styles.formGroup}>
-            <label>Resultado:</label>
-            <input
-              type="text"
-              value={novoItem.resultado}
-              onChange={(e) => setNovoItem({ ...novoItem, resultado: e.target.value })}
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label>Descrição:</label>
-            <input
-              type="text"
-              value={novoItem.descricao}
-              onChange={(e) => setNovoItem({ ...novoItem, descricao: e.target.value })}
-              className={styles.input}
-            />
-          </div>
-
-          <button onClick={handleAddItem} className={styles.btnAdd}>
-            {editandoIndex !== null ? 'Atualizar' : 'Adicionar'}
-          </button>
-
-          {itens.length > 0 && (
-            <div className={styles.scrollView}>
-              <h3>Resultados Cadastrados:</h3>
-              <ul className={styles.itemList}>
-                {itens.map((item, index) => (
-                  <li key={index} className={styles.item}>
-                    <strong>Resultado:</strong> {item.resultado} <br />
-                    <strong>Descrição:</strong> {item.descricao} <br />
-                    <button onClick={() => handleEditItem(index)} className={styles.btnEdit}>Editar</button>
-                  </li>
-                ))}
-              </ul>
+      {loading ? (
+        <div className={styles.spinner}></div> // Exibe o spinner enquanto está carregando
+      ) : (
+        neoplasia && (
+          <>
+            <div className={styles.formGroup}>
+              <label>Resultado:</label>
+              <input
+                type="text"
+                value={novoItem.resultado}
+                onChange={(e) => setNovoItem({ ...novoItem, resultado: e.target.value })}
+                className={styles.input}
+              />
             </div>
-          )}
+            <div className={styles.formGroup}>
+              <label>Descrição:</label>
+              <input
+                type="text"
+                value={novoItem.descricao}
+                onChange={(e) => setNovoItem({ ...novoItem, descricao: e.target.value })}
+                className={styles.input}
+              />
+            </div>
 
-          <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
-            {loading ? 'Salvando...' : 'Salvar Resultados'}
-          </button>
-          {loading && <div className={styles.spinner}></div>}
-        </>
+            <button onClick={handleAddItem} className={styles.btnAdd}>
+              {editandoIndex !== null ? 'Atualizar' : 'Adicionar'}
+            </button>
+
+            {itens.length > 0 && (
+              <div className={styles.scrollView}>
+                <h3>Resultados Cadastrados:</h3>
+                <ul className={styles.itemList}>
+                  {itens.map((item, index) => (
+                    <li key={index} className={styles.item}>
+                      <strong>Resultado:</strong> {item.resultado} <br />
+                      <strong>Descrição:</strong> {item.descricao} <br />
+                      <button onClick={() => handleEditItem(index)} className={styles.btnEdit}>Editar</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
+              {loading ? 'Carregando...' : 'Salvar Resultados'}
+            </button>
+          </>
+        )
       )}
     </div>
   );

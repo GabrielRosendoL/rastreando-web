@@ -1,44 +1,30 @@
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa'; // Ícones do FontAwesome
 import { useNavigate } from 'react-router-dom';
-import styles from './sinaisSintomas.styles.module.css';
+import { auth } from '../../config/firebase-config';
+import styles from './editarSinaisSintomas.styles.module.css';
 
-const SinaisSintomas: React.FC = () => {
+const EditarSinaisSintomas: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
   const [sintomas, setSintomas] = useState<string[]>([]);
   const [novoSintoma, setNovoSintoma] = useState<string>('');
   const [editandoSintoma, setEditandoSintoma] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Spinner loading state
+  const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Ativar loading durante o fetch
-      if (sexo && neoplasia) {
-        const adminCollectionRef = collection(db, 'administradores');
-        const adminSnapshots = await getDocs(adminCollectionRef);
-        const sintomasEncontrados: string[] = [];
-
-        // Percorrer cada administrador e verificar a combinação 'sexo_neoplasia'
-        for (const admin of adminSnapshots.docs) {
-          const adminId = admin.id; // ID do administrador
-          const docRef = doc(db, 'sinaisSintomas', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const sintomasAdmin = data.sintomas || [];
-            sintomasEncontrados.push(...sintomasAdmin); // Adicionar os sintomas encontrados
-          }
+      const user = auth.currentUser;
+      if (user && sexo && neoplasia) {
+        const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSintomas(data.sintomas || []);
         }
-
-        // Atualizar os sintomas com base no que foi encontrado
-        setSintomas(sintomasEncontrados);
       }
-      setLoading(false); // Desativar loading após o fetch
     };
     fetchData();
   }, [sexo, neoplasia, db]);
@@ -53,47 +39,40 @@ const SinaisSintomas: React.FC = () => {
     setNeoplasia(event.target.value);
   };
 
-  const handleAddOrEditSintoma = () => {
+  const handleAddSintoma = () => {
     if (novoSintoma.trim() !== '') {
       if (editandoSintoma !== null) {
         const novosSintomas = [...sintomas];
         novosSintomas[editandoSintoma] = novoSintoma;
         setSintomas(novosSintomas);
         setEditandoSintoma(null);
-      } else if (!sintomas.includes(novoSintoma)) {
+      } else {
         setSintomas([...sintomas, novoSintoma]);
       }
       setNovoSintoma('');
     }
   };
 
-  const handleEdit = (index: number) => {
+  const handleEditSintoma = (index: number) => {
     setNovoSintoma(sintomas[index]);
     setEditandoSintoma(index);
   };
 
-  const handleRemove = (index: number) => {
+  const handleRemoveSintoma = (index: number) => {
     const novosSintomas = sintomas.filter((_, i) => i !== index);
     setSintomas(novosSintomas);
   };
 
   const handleSave = async () => {
-    setLoading(true); // Ativar loading durante o salvamento
-    if (sexo && neoplasia) {
+    setLoading(true);
+    const user = auth.currentUser;
+    if (user && sexo && neoplasia) {
+      const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
       try {
-        // Vamos salvar para todos os administradores
-        const adminCollectionRef = collection(db, 'administradores');
-        const adminSnapshots = await getDocs(adminCollectionRef);
-
-        for (const admin of adminSnapshots.docs) {
-          const adminId = admin.id; // ID do administrador
-          const docRef = doc(db, 'sinaisSintomas', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
-          await setDoc(docRef, {
-            sintomas,
-          });
-        }
-
-        alert('Sucesso!');
+        await setDoc(docRef, {
+          sintomas,
+        });
+        alert('Sucesso!'); // Alerta de sucesso ao salvar
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
@@ -102,12 +81,12 @@ const SinaisSintomas: React.FC = () => {
     } else {
       alert('Por favor, preencha todos os campos.');
     }
-    setLoading(false); // Desativar loading após o salvamento
+    setLoading(false);
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Cadastrar Sinais e Sintomas</h1>
+      <h1 className={styles.title}>Editar Sinais e Sintomas</h1>
       <div className={styles.formGroup}>
         <label>Sexo:</label>
         <select value={sexo || ''} onChange={handleSexoChange} className={styles.select}>
@@ -148,7 +127,7 @@ const SinaisSintomas: React.FC = () => {
             onChange={(e) => setNovoSintoma(e.target.value)}
             className={styles.input}
           />
-          <button onClick={handleAddOrEditSintoma} className={styles.btnAdd}>
+          <button onClick={handleAddSintoma} className={styles.btnAdd}>
             {editandoSintoma !== null ? 'Salvar Edição' : 'Adicionar'}
           </button>
           <div className={styles.scrollContainer}>
@@ -156,12 +135,8 @@ const SinaisSintomas: React.FC = () => {
               {sintomas.map((sintoma, index) => (
                 <li key={index} className={styles.sintomaItem}>
                   <span className={styles.sintomaText}>{sintoma}</span>
-                  <button onClick={() => handleEdit(index)} className={styles.btnEdit}>
-                    <FaEdit className={styles.icon} />
-                  </button>
-                  <button onClick={() => handleRemove(index)} className={styles.btnRemove}>
-                    <FaTrash className={styles.icon} />
-                  </button>
+                  <button onClick={() => handleEditSintoma(index)} className={styles.btnEdit}>Editar</button>
+                  <button onClick={() => handleRemoveSintoma(index)} className={styles.btnRemove}>Remover</button>
                 </li>
               ))}
             </ul>
@@ -171,9 +146,9 @@ const SinaisSintomas: React.FC = () => {
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
         {loading ? 'Carregando...' : 'Salvar'}
       </button>
-      {loading && <div className={styles.spinner}></div>} {/* Exibir o spinner enquanto o loading for true */}
+      {loading && <div className={styles.spinner}></div>}
     </div>
   );
 };
 
-export default SinaisSintomas;
+export default EditarSinaisSintomas;

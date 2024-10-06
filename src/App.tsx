@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import CondutaManejoResultado from './pages/CondutaManejoResultado/condutaManejoResultado';
 import IndicacoesRastreio from './pages/IndicacoesRastreio/indicacoesRastreio';
 import MarqueConsulta from './pages/MarqueConsulta/marqueConsulta';
-import EditarSinaisAlarmeFatoresRisco from './pages/SinaisAlarmeFatoresRisco/editarSinaisAlarmeFatoresRisco';
 import SinaisAlarmeFatoresRisco from './pages/SinaisAlarmeFatoresRisco/sinaisAlarmeFatoresRisco';
 import SinaisSintomas from './pages/SinaisSintomas/sinaisSintomas';
 import TelaCadastro from './pages/TelaCadastro/telaCadastro';
@@ -33,7 +32,6 @@ function App() {
             <Route path="/indicacoesRastreio" element={<IndicacoesRastreio />} />
             <Route path="/marqueConsulta" element={<MarqueConsulta />} />
             <Route path="/condutaManejoResultado" element={<CondutaManejoResultado />} />
-            <Route path="/editarSinaisAlarmeFatoresRisco" element={<EditarSinaisAlarmeFatoresRisco />} />
           </Routes>
         </div>
       </Router>

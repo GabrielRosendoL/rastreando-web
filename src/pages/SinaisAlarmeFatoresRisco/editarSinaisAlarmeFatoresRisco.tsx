@@ -186,7 +186,7 @@ const EditarSinaisAlarmeFatoresRisco: React.FC = () => {
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
-        {loading ? 'Salvando...' : 'Salvar'}
+        {loading ? 'Carregando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
     </div>

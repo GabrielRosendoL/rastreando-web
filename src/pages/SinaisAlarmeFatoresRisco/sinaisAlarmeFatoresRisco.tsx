@@ -24,6 +24,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   // Função para buscar dados de todos os administradores (leitura pública)
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Ativar o spinner de loading
       if (sexo && neoplasia) {
         const adminCollectionRef = collection(db, 'administradores');
         const adminSnapshots = await getDocs(adminCollectionRef);
@@ -44,6 +45,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
 
         setSintomas(sintomasEncontrados);
       }
+      setLoading(false); // Desativar o spinner de loading
     };
     fetchData();
   }, [sexo, neoplasia, db]);
@@ -100,7 +102,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoading(true); // Ativar o spinner de loading durante o salvamento
     try {
       const adminCollectionRef = collection(db, 'administradores');
       const adminSnapshots = await getDocs(adminCollectionRef);
@@ -131,7 +133,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
       console.error('Erro ao salvar os dados no Firebase:', error);
       alert('Erro ao salvar os dados!');
     }
-    setLoading(false);
+    setLoading(false); // Desativar o spinner de loading
   };
 
   return (
@@ -201,12 +203,11 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
-        {loading ? 'Salvando...' : 'Salvar'}
+        {loading ? 'Carregando...' : 'Salvar'}
       </button>
-      {loading && <div className={styles.spinner}></div>}
+      {loading && <div className={styles.spinner}></div>} {/* Exibir o spinner durante o loading */}
     </div>
   );
 };
 
 export default SinaisAlarmeFatoresRisco;
-

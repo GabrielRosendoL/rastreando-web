@@ -55,8 +55,8 @@ body {
 
 .title {
   font-family: 'Quicksand-Bold', sans-serif;
-  font-size: 32px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 15px;
   color: #f03f04;
 }
 
@@ -64,7 +64,7 @@ body {
   margin-bottom: 15px;
 }
 
-.input, .select {
+.select, .input {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
@@ -72,53 +72,7 @@ body {
   border-radius: 5px;
 }
 
-.scrollView {
-  max-height: 200px;
-  overflow-y: auto;
-  margin-top: 20px;
-}
-
-.scrollView::-webkit-scrollbar {
-  width: 8px; /* Define a largura da barra de rolagem */
-}
-
-.scrollView::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
-  border-radius: 10px;
-}
-
-.scrollView::-webkit-scrollbar-thumb {
-  background: #f03f04; /* Cor da barra de rolagem */
-  border-radius: 10px;
-}
-
-.scrollView::-webkit-scrollbar-thumb:hover {
-  background: #e03a02; /* Cor ao passar o mouse */
-}
-
-.localList {
-  list-style: none;
-  padding: 0;
-}
-
-.localItem {
-  background-color: #f1f1f1;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: left;
-}
-
-.localItem a {
-  color: #232d97;
-  text-decoration: none;
-}
-
-.localItem a:hover {
-  text-decoration: underline;
-}
-
-.btnAdd, .btnSave, .btnEdit {
+.btnAdd, .btnSave, .btnEdit, .btnRemove {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -130,8 +84,55 @@ body {
   margin-top: 10px;
 }
 
-.btnAdd:hover, .btnSave:hover, .btnEdit:hover {
+.btnAdd:hover, .btnSave:hover, .btnEdit:hover, .btnRemove:hover {
   background-color: #ff5721;
+}
+
+.btnEdit, .btnRemove {
+  width: auto;
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.btnEdit {
+  margin-right: 10px;
+}
+
+.sintomaItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sintomaText {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.scrollContainer {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: #f03f04;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  background: #f03f04;
 }
 
 .spinner {
