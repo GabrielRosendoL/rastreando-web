@@ -85,7 +85,7 @@ const MarqueConsulta: React.FC = () => {
       const adminId = admin.id;
       const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexo}`);
       
-      // Salvando os locais no documento do Firebase
+      // Salvando os locais no documento do Firebase---
       try {
         await setDoc(docRef, { locais }, { merge: true });
       } catch (error) {
