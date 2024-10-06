@@ -1,13 +1,12 @@
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../../config/firebase-config';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import styles from './sinaisAlarmeFatoresRisco.styles.module.css';
 
 interface Sintoma {
   descricao: string;
-  imagem: File | null;
+  imagem: File | null | string;
 }
 
 const SinaisAlarmeFatoresRisco: React.FC = () => {
@@ -16,24 +15,34 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const [sintomas, setSintomas] = useState<Sintoma[]>([]);
   const [novoSintoma, setNovoSintoma] = useState<string>('');
   const [novaImagem, setNovaImagem] = useState<File | null>(null);
+  const [editandoSintomaIndex, setEditandoSintomaIndex] = useState<number | null>(null); // Index do sintoma em edição
   const [loading, setLoading] = useState<boolean>(false);
   const imagemInputRef = useRef<HTMLInputElement | null>(null);
   const db = getFirestore();
   const storage = getStorage();
-  const navigate = useNavigate();
 
+  // Função para buscar dados de todos os administradores (leitura pública)
   useEffect(() => {
     const fetchData = async () => {
-      const user = auth.currentUser;
-      if (user && sexo && neoplasia) {
-        const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setSintomas(data.sintomas || []);
-        } else {
-          setSintomas([]);
+      if (sexo && neoplasia) {
+        const adminCollectionRef = collection(db, 'administradores');
+        const adminSnapshots = await getDocs(adminCollectionRef);
+        const sintomasEncontrados: Sintoma[] = [];
+
+        // Percorrer cada administrador e verificar a combinação 'sexo_neoplasia'
+        for (const admin of adminSnapshots.docs) {
+          const adminId = admin.id; // ID do administrador
+          const docRef = doc(db, 'sinaisAlarmeFatoresRisco', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const sintomasAdmin = data.sintomas || [];
+            sintomasEncontrados.push(...sintomasAdmin); // Adicionar os sintomas encontrados
+          }
         }
+
+        setSintomas(sintomasEncontrados);
       }
     };
     fetchData();
@@ -41,30 +50,27 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); 
-    setSintomas([]); 
+    setNeoplasia(null);
+    setSintomas([]);
   };
 
-  const handleNeoplasiaChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setNeoplasia(event.target.value);
-    if (sexo && event.target.value) {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${event.target.value}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setSintomas(data.sintomas || []);
-        } else {
-          setSintomas([]);
-        }
-      }
-    }
   };
 
-  const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '' && novaImagem && !sintomas.some(s => s.descricao === novoSintoma)) {
-      setSintomas([...sintomas, { descricao: novoSintoma, imagem: novaImagem }]);
+  const handleAddOrEditSintoma = () => {
+    if (novoSintoma.trim() !== '' && novaImagem) {
+      const novoSintomaObj: Sintoma = { descricao: novoSintoma, imagem: novaImagem };
+
+      if (editandoSintomaIndex !== null) {
+        const novosSintomas = [...sintomas];
+        novosSintomas[editandoSintomaIndex] = novoSintomaObj; // Edita o sintoma
+        setSintomas(novosSintomas);
+        setEditandoSintomaIndex(null);
+      } else {
+        setSintomas([...sintomas, novoSintomaObj]); // Adiciona novo sintoma
+      }
+
       setNovoSintoma('');
       setNovaImagem(null);
       if (imagemInputRef.current) {
@@ -75,6 +81,18 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
     }
   };
 
+  const handleEdit = (index: number) => {
+    const sintoma = sintomas[index];
+    setNovoSintoma(sintoma.descricao);
+    setNovaImagem(sintoma.imagem as File); // Se estiver editando, a imagem pode já ser uma URL
+    setEditandoSintomaIndex(index);
+  };
+
+  const handleRemove = (index: number) => {
+    const novosSintomas = sintomas.filter((_, i) => i !== index);
+    setSintomas(novosSintomas);
+  };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setNovaImagem(event.target.files[0]);
@@ -83,50 +101,37 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
 
   const handleSave = async () => {
     setLoading(true);
-    const user = auth.currentUser;
-    if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'sinaisAlarmeFatoresRisco', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-      const docSnap = await getDoc(docRef);
-      let sintomasExistentes: Sintoma[] = [];
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        sintomasExistentes = data.sintomas || [];
-      }
+    try {
+      const adminCollectionRef = collection(db, 'administradores');
+      const adminSnapshots = await getDocs(adminCollectionRef);
 
-      const novosSintomas = sintomas.filter(sintoma => !sintomasExistentes.some(s => s.descricao === sintoma.descricao));
-      const todosSintomas = [...sintomasExistentes, ...novosSintomas];
-
+      // Upload de imagens e salvamento para todos os administradores
       const sintomasComUrls = await Promise.all(
-        todosSintomas.map(async (sintoma) => {
+        sintomas.map(async (sintoma) => {
           if (sintoma.imagem instanceof File) {
-            const storageRef = ref(storage, `images/${user.uid}/${sintoma.imagem.name}`);
+            const storageRef = ref(storage, `images/${sintoma.imagem.name}`);
             const uploadTask = await uploadBytesResumable(storageRef, sintoma.imagem);
             const imageUrl = await getDownloadURL(uploadTask.ref);
             return { descricao: sintoma.descricao, imagem: imageUrl };
           }
-          return sintoma;
+          return sintoma; // Se já for uma URL, retorna diretamente
         })
       );
 
-      try {
+      for (const admin of adminSnapshots.docs) {
+        const adminId = admin.id;
+        const docRef = doc(db, 'sinaisAlarmeFatoresRisco', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
         await setDoc(docRef, {
           sintomas: sintomasComUrls,
         });
-        alert('Sucesso!'); // Alerta de sucesso ao salvar
-      } catch (error) {
-        console.error('Erro ao salvar os dados no Firebase:', error);
-        alert('Erro ao salvar os dados!');
       }
-      
-      navigate(-1);
-    } else {
-      alert('Por favor, preencha todos os campos.');
+
+      alert('Sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar os dados no Firebase:', error);
+      alert('Erro ao salvar os dados!');
     }
     setLoading(false);
-  };
-
-  const handleEdit = () => {
-    navigate('/editarSinaisAlarmeFatoresRisco');
   };
 
   return (
@@ -171,30 +176,37 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
             value={novoSintoma}
             onChange={(e) => setNovoSintoma(e.target.value)}
             className={styles.input}
+            placeholder="Descrição do sintoma"
           />
-          <input
-            type="file"
-            onChange={handleImageChange}
-            className={styles.input}
-            ref={imagemInputRef}
-          />
-          <button onClick={handleAddSintoma} className={styles.btnAdd}>Adicionar</button>
-          <select multiple className={styles.sintomasSelect}>
+          <input type="file" onChange={handleImageChange} className={styles.input} ref={imagemInputRef} />
+          <button onClick={handleAddOrEditSintoma} className={styles.btnAdd}>
+            {editandoSintomaIndex !== null ? 'Salvar Edição' : 'Adicionar'}
+          </button>
+          <ul className={styles.sintomasList}>
             {sintomas.map((sintoma, index) => (
-              <option key={index} value={sintoma.descricao}>{sintoma.descricao}</option>
+              <li key={index} className={styles.sintomaItem}>
+                <span>{sintoma.descricao}</span>
+                {typeof sintoma.imagem === 'string' && <img src={sintoma.imagem} alt={sintoma.descricao} />}
+                <div className={styles.botoesItens}>
+                  <button onClick={() => handleEdit(index)} className={styles.btnEdit}>
+                    <FaEdit />
+                  </button>
+                  <button onClick={() => handleRemove(index)} className={styles.btnRemove}>
+                    <FaTrash />
+                  </button>
+                </div>
+              </li>
             ))}
-          </select>
+          </ul>
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
         {loading ? 'Salvando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
-      <button onClick={handleEdit} className={styles.btnEdit}>
-        <span>Editar</span>
-      </button>
     </div>
   );
 };
 
 export default SinaisAlarmeFatoresRisco;
+

@@ -26,7 +26,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 500px; /* Aumentado para acomodar a lista e os botões */
   text-align: center;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -72,7 +72,7 @@ body {
   border-radius: 5px;
 }
 
-.btnAdd, .btnSave, .btnEdit {
+.btnAdd, .btnSave {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -84,37 +84,95 @@ body {
   margin-top: 10px;
 }
 
-.btnAdd:hover, .btnSave:hover {
+.btnAdd:hover, .btnSave:hover, .btnEdit:hover {
   background-color: #ff5721;
 }
 
-.sintomasSelect {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
+/* Lista de sintomas */
+.sintomasList {
+  list-style-type: none;
+  padding: 0;
+  margin: 15px 0;
+  max-height: 540px;
+  overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
-  height: 100px;
-  overflow-y: auto;
 }
 
-.sintomasSelect::-webkit-scrollbar {
-  width: 12px;
+.sintomasItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #f1f1f1;
+  transition: background-color 0.3s;
 }
 
-.sintomasSelect::-webkit-scrollbar-track {
+.sintomasItem:hover {
+  background-color: #f9f9f9;
+}
+
+.sintomaText {
+  width: 100%;
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Imagem do sintoma */
+.imagem {
+  width: 100px;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Contêiner para alinhar os botões na mesma linha abaixo da imagem */
+.buttonContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px; /* Espaçamento entre os botões */
+}
+
+/* Botões de editar/remover */
+.btnEdit, .btnRemove {
+  background-color: #232d97;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 36px;
+}
+
+.btnEdit:hover, .btnRemove:hover {
+  background-color: #f03f04;
+}
+
+/* Barra de rolagem personalizada para a lista */
+.sintomasList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sintomasList::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
 
-.sintomasSelect::-webkit-scrollbar-thumb {
+.sintomasList::-webkit-scrollbar-thumb {
   background: #f03f04;
   border-radius: 10px;
-  border: 3px solid #f1f1f1;
 }
 
-.sintomasSelect::-webkit-scrollbar-thumb:hover {
-  background: #f03f04;
+.sintomasList::-webkit-scrollbar-thumb:hover {
+  background: #e03a02;
 }
 
 .spinner {
@@ -125,6 +183,20 @@ body {
   height: 24px;
   animation: spin 1s linear infinite;
   margin: 10px auto;
+}
+
+.botoesItens {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.sintomaItem {
+  border: 2px solid #e03a02;
+  margin-top: 8px;
+  border-radius: 15px;
 }
 
 @keyframes spin {
