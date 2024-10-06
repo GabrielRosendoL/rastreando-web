@@ -1,7 +1,6 @@
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../config/firebase-config';
 import styles from './indicacoesRastreio.styles.module.css';
 
 const IndicacoesRastreio: React.FC = () => {
@@ -14,12 +13,21 @@ const IndicacoesRastreio: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const user = auth.currentUser;
-      if (user && sexo && neoplasia) {
-        const docRef = doc(db, 'indicacoesRastreio', `${user.uid}_${sexo}_${neoplasia}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setTexto(docSnap.data().texto);
+      if (sexo && neoplasia) {
+        // Obter todos os IDs dos administradores
+        const adminCollectionRef = collection(db, 'administradores');
+        const adminSnapshots = await getDocs(adminCollectionRef);
+
+        // Percorrer cada administrador para encontrar o documento correto
+        for (const admin of adminSnapshots.docs) {
+          const adminId = admin.id;
+          const docRef = doc(db, 'indicacoesRastreio', `${adminId}_${sexo}_${neoplasia}`);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            setTexto(docSnap.data().texto);
+            break; // Se encontrou um documento, interrompe o loop
+          }
         }
       }
     };
@@ -39,29 +47,33 @@ const IndicacoesRastreio: React.FC = () => {
 
   const handleSave = async () => {
     setLoading(true);
-    const user = auth.currentUser;
-    if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'indicacoesRastreio', `${user.uid}_${sexo}_${neoplasia}`);
-      try {
-        await setDoc(docRef, {
-          sexo,
-          neoplasia,
-          texto,
-        });
-        alert('Sucesso!'); // Alerta de sucesso ao salvar
-      } catch (error) {
-        console.error('Erro ao salvar os dados no Firebase:', error);
-        alert('Erro ao salvar os dados!');
+    if (sexo && neoplasia) {
+      // Obter todos os IDs dos administradores
+      const adminCollectionRef = collection(db, 'administradores');
+      const adminSnapshots = await getDocs(adminCollectionRef);
+
+      for (const admin of adminSnapshots.docs) {
+        const adminId = admin.id;
+        const docRef = doc(db, 'indicacoesRastreio', `${adminId}_${sexo}_${neoplasia}`);
+        
+        try {
+          await setDoc(docRef, {
+            sexo,
+            neoplasia,
+            texto,
+          });
+          alert('Sucesso!'); // Alerta de sucesso ao salvar
+        } catch (error) {
+          console.error('Erro ao salvar os dados no Firebase:', error);
+          alert('Erro ao salvar os dados!');
+        }
       }
+
       navigate(-1);
     } else {
       alert('Por favor, preencha todos os campos.');
     }
     setLoading(false);
-  };
-
-  const handleEdit = () => {
-    navigate('/editarIndicacoesRastreio');
   };
 
   return (
@@ -112,9 +124,6 @@ const IndicacoesRastreio: React.FC = () => {
         {loading ? 'Salvando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
-      {/* <button onClick={handleEdit} className={styles.btnEdit}>
-        <span>Editar</span>
-      </button> */}
     </div>
   );
 };

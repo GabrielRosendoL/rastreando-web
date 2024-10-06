@@ -1,6 +1,5 @@
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { auth } from '../../config/firebase-config';
 import styles from './marqueConsulta.styles.module.css';
 
 interface Local {
@@ -17,18 +16,26 @@ const MarqueConsulta: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
 
-  // Função para buscar os locais do Firebase
+  // Função para buscar os locais do Firebase para todos os administradores
   const fetchLocais = async (sexoAtual: string) => {
-    const user = auth.currentUser;
-    if (user && sexoAtual) {
-      const docRef = doc(db, 'marqueConsulta', `${user.uid}_${sexoAtual}`);
+    const adminCollectionRef = collection(db, 'administradores');
+    const adminSnapshots = await getDocs(adminCollectionRef);
+    const locaisEncontrados: Local[] = [];
+
+    // Percorrer todos os administradores para buscar os locais
+    for (const admin of adminSnapshots.docs) {
+      const adminId = admin.id;
+      const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexoAtual}`);
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists()) {
-        setLocais(docSnap.data().locais || []);
-      } else {
-        setLocais([]);
+        const data = docSnap.data();
+        const locaisAdmin = data.locais || [];
+        locaisEncontrados.push(...locaisAdmin); // Adiciona os locais do administrador
       }
     }
+
+    setLocais(locaisEncontrados);
   };
 
   useEffect(() => {
@@ -68,20 +75,24 @@ const MarqueConsulta: React.FC = () => {
 
   const handleSave = async () => {
     setLoading(true);
-    const user = auth.currentUser;
-    if (user && sexo) {
-      const docRef = doc(db, 'marqueConsulta', `${user.uid}_${sexo}`);
+    // Obter todos os IDs dos administradores para salvar os locais
+    const adminCollectionRef = collection(db, 'administradores');
+    const adminSnapshots = await getDocs(adminCollectionRef);
+
+    for (const admin of adminSnapshots.docs) {
+      const adminId = admin.id;
+      const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexo}`);
+      
       // Salvando os locais no documento do Firebase
       try {
         await setDoc(docRef, { locais }, { merge: true });
-        alert('Sucesso!');
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
       }
-    } else {
-      alert('Por favor, preencha todos os campos.');
     }
+
+    alert('Sucesso!');
     setLoading(false);
   };
 

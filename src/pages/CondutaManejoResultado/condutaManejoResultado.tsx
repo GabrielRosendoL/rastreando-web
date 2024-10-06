@@ -1,7 +1,5 @@
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../../config/firebase-config';
 import styles from './condutaManejoResultado.styles.module.css';
 
 interface Item {
@@ -17,30 +15,38 @@ const CondutaManejoResultado: React.FC = () => {
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
-  const navigate = useNavigate();
 
-  // Função para buscar os itens do Firebase
-  const fetchItens = async () => {
-    const user = auth.currentUser;
-    if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'condutaManejoResultado', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
+  // Função para buscar os itens do Firebase de todos os administradores
+  const fetchItens = async (sexoAtual: string, neoplasiaAtual: string) => {
+    const adminCollectionRef = collection(db, 'administradores');
+    const adminSnapshots = await getDocs(adminCollectionRef);
+    const itensEncontrados: Item[] = [];
+
+    // Percorrer todos os administradores para buscar os itens
+    for (const admin of adminSnapshots.docs) {
+      const adminId = admin.id;
+      const docRef = doc(db, 'condutaManejoResultado', adminId, 'combinacoes', `${sexoAtual}_${neoplasiaAtual}`);
       const docSnap = await getDoc(docRef);
+
       if (docSnap.exists()) {
-        setItens(docSnap.data().itens || []);
-      } else {
-        setItens([]);
+        const data = docSnap.data();
+        const itensAdmin = data.itens || [];
+        itensEncontrados.push(...itensAdmin); // Adiciona os itens do administrador
       }
     }
+
+    setItens(itensEncontrados);
   };
 
   useEffect(() => {
     if (sexo && neoplasia) {
-      fetchItens();
+      fetchItens(sexo, neoplasia);
     }
   }, [sexo, neoplasia, db]);
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSexo(event.target.value);
+    const novoSexo = event.target.value;
+    setSexo(novoSexo);
     setNeoplasia(null); // Resetar a neoplasia ao trocar o sexo
     setItens([]); // Limpar a lista de itens
   };
@@ -73,20 +79,23 @@ const CondutaManejoResultado: React.FC = () => {
 
   const handleSave = async () => {
     setLoading(true);
-    const user = auth.currentUser;
-    if (user && sexo && neoplasia) {
-      const docRef = doc(db, 'condutaManejoResultado', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-      // Salvando os itens no documento do Firebase
+    const adminCollectionRef = collection(db, 'administradores');
+    const adminSnapshots = await getDocs(adminCollectionRef);
+
+    // Salvando os itens em todos os documentos de administradores
+    for (const admin of adminSnapshots.docs) {
+      const adminId = admin.id;
+      const docRef = doc(db, 'condutaManejoResultado', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
+
       try {
         await setDoc(docRef, { itens }, { merge: true });
-        alert('Sucesso!');
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
       }
-    } else {
-      alert('Por favor, preencha todos os campos.');
     }
+
+    alert('Sucesso!');
     setLoading(false);
   };
 
