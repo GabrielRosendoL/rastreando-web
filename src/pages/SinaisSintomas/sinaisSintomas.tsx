@@ -1,5 +1,6 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Ícones do FontAwesome
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import styles from './sinaisSintomas.styles.module.css';
@@ -9,6 +10,7 @@ const SinaisSintomas: React.FC = () => {
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
   const [sintomas, setSintomas] = useState<string[]>([]);
   const [novoSintoma, setNovoSintoma] = useState<string>('');
+  const [editandoSintoma, setEditandoSintoma] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
   const navigate = useNavigate();
@@ -40,11 +42,28 @@ const SinaisSintomas: React.FC = () => {
     setNeoplasia(event.target.value);
   };
 
-  const handleAddSintoma = () => {
-    if (novoSintoma.trim() !== '' && !sintomas.includes(novoSintoma)) {
-      setSintomas([...sintomas, novoSintoma]);
+  const handleAddOrEditSintoma = () => {
+    if (novoSintoma.trim() !== '') {
+      if (editandoSintoma !== null) {
+        const novosSintomas = [...sintomas];
+        novosSintomas[editandoSintoma] = novoSintoma;
+        setSintomas(novosSintomas);
+        setEditandoSintoma(null);
+      } else if (!sintomas.includes(novoSintoma)) {
+        setSintomas([...sintomas, novoSintoma]);
+      }
       setNovoSintoma('');
     }
+  };
+
+  const handleEdit = (index: number) => {
+    setNovoSintoma(sintomas[index]);
+    setEditandoSintoma(index);
+  };
+
+  const handleRemove = (index: number) => {
+    const novosSintomas = sintomas.filter((_, i) => i !== index);
+    setSintomas(novosSintomas);
   };
 
   const handleSave = async () => {
@@ -52,21 +71,11 @@ const SinaisSintomas: React.FC = () => {
     const user = auth.currentUser;
     if (user && sexo && neoplasia) {
       const docRef = doc(db, 'sinaisSintomas', user.uid, 'combinacoes', `${sexo}_${neoplasia}`);
-      const docSnap = await getDoc(docRef);
-      let sintomasExistentes: string[] = [];
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        sintomasExistentes = data.sintomas || [];
-      }
-
-      const novosSintomas = sintomas.filter(sintoma => !sintomasExistentes.includes(sintoma));
-      const todosSintomas = [...sintomasExistentes, ...novosSintomas];
-
       try {
         await setDoc(docRef, {
-          sintomas: todosSintomas,
+          sintomas,
         });
-        alert('Sucesso!'); // Alerta de sucesso ao salvar
+        alert('Sucesso!');
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
@@ -76,10 +85,6 @@ const SinaisSintomas: React.FC = () => {
       alert('Por favor, preencha todos os campos.');
     }
     setLoading(false);
-  };
-
-  const handleEdit = () => {
-    navigate('/editarSinaisSintomas');
   };
 
   return (
@@ -125,21 +130,30 @@ const SinaisSintomas: React.FC = () => {
             onChange={(e) => setNovoSintoma(e.target.value)}
             className={styles.input}
           />
-          <button onClick={handleAddSintoma} className={styles.btnAdd}>Adicionar</button>
-          <select multiple className={styles.sintomasSelect}>
-            {sintomas.map((sintoma, index) => (
-              <option key={index} value={sintoma}>{sintoma}</option>
-            ))}
-          </select>
+          <button onClick={handleAddOrEditSintoma} className={styles.btnAdd}>
+            {editandoSintoma !== null ? 'Salvar Edição' : 'Adicionar'}
+          </button>
+          <div className={styles.scrollContainer}>
+            <ul className={styles.sintomasList}>
+              {sintomas.map((sintoma, index) => (
+                <li key={index} className={styles.sintomaItem}>
+                  <span className={styles.sintomaText}>{sintoma}</span>
+                  <button onClick={() => handleEdit(index)} className={styles.btnEdit}>
+                    <FaEdit className={styles.icon} />
+                  </button>
+                  <button onClick={() => handleRemove(index)} className={styles.btnRemove}>
+                    <FaTrash className={styles.icon} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
         {loading ? 'Salvando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
-      <button onClick={handleEdit} className={styles.btnEdit}>
-        <span>Editar</span>
-      </button>
     </div>
   );
 };
