@@ -17,7 +17,7 @@ body {
   align-items: center;
   height: 100vh;
   background-color: #232d97;
-  overflow: hidden; /* Evitar scroll duplicado no body */
+  overflow: hidden;
 }
 
 .container {
@@ -26,7 +26,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px; /* Aumentado para acomodar a lista e os botões */
+  max-width: 500px;
   text-align: center;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -34,23 +34,22 @@ body {
   max-height: 90vh;
 }
 
-/* Estilo da barra de rolagem */
 .container::-webkit-scrollbar {
-  width: 8px; /* Define a largura da barra de rolagem */
+  width: 8px;
 }
 
 .container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+  background: #f1f1f1;
   border-radius: 10px;
 }
 
 .container::-webkit-scrollbar-thumb {
-  background: #f03f04; /* Cor da barra de rolagem */
+  background: #f03f04;
   border-radius: 10px;
 }
 
 .container::-webkit-scrollbar-thumb:hover {
-  background: #e03a02; /* Cor ao passar o mouse */
+  background: #e03a02;
 }
 
 .title {
@@ -64,7 +63,8 @@ body {
   margin-bottom: 15px;
 }
 
-.select, .input {
+.select,
+.input {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
@@ -72,7 +72,8 @@ body {
   border-radius: 5px;
 }
 
-.btnAdd, .btnSave {
+.btnAdd,
+.btnSave {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -84,11 +85,12 @@ body {
   margin-top: 10px;
 }
 
-.btnAdd:hover, .btnSave:hover, .btnEdit:hover {
+.btnAdd:hover,
+.btnSave:hover,
+.btnEdit:hover {
   background-color: #ff5721;
 }
 
-/* Lista de sintomas */
 .sintomasList {
   list-style-type: none;
   padding: 0;
@@ -121,7 +123,6 @@ body {
   font-size: 14px;
 }
 
-/* Imagem do sintoma */
 .imagem {
   width: 100px;
   height: auto;
@@ -129,15 +130,14 @@ body {
   margin-bottom: 10px;
 }
 
-/* Contêiner para alinhar os botões na mesma linha abaixo da imagem */
 .buttonContainer {
   display: flex;
   justify-content: flex-start;
-  gap: 10px; /* Espaçamento entre os botões */
+  gap: 10px;
 }
 
-/* Botões de editar/remover */
-.btnEdit, .btnRemove {
+.btnEdit,
+.btnRemove {
   background-color: #232d97;
   color: white;
   border: none;
@@ -152,11 +152,11 @@ body {
   height: 36px;
 }
 
-.btnEdit:hover, .btnRemove:hover {
+.btnEdit:hover,
+.btnRemove:hover {
   background-color: #f03f04;
 }
 
-/* Barra de rolagem personalizada para a lista */
 .sintomasList::-webkit-scrollbar {
   width: 8px;
 }
@@ -203,6 +203,7 @@ body {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

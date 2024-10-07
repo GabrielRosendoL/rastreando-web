@@ -15,37 +15,35 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const [sintomas, setSintomas] = useState<Sintoma[]>([]);
   const [novoSintoma, setNovoSintoma] = useState<string>('');
   const [novaImagem, setNovaImagem] = useState<File | null>(null);
-  const [editandoSintomaIndex, setEditandoSintomaIndex] = useState<number | null>(null); // Index do sintoma em edição
+  const [editandoSintomaIndex, setEditandoSintomaIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const imagemInputRef = useRef<HTMLInputElement | null>(null);
   const db = getFirestore();
   const storage = getStorage();
 
-  // Função para buscar dados de todos os administradores (leitura pública)
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Ativar o spinner de loading
+      setLoading(true);
       if (sexo && neoplasia) {
         const adminCollectionRef = collection(db, 'administradores');
         const adminSnapshots = await getDocs(adminCollectionRef);
         const sintomasEncontrados: Sintoma[] = [];
 
-        // Percorrer cada administrador e verificar a combinação 'sexo_neoplasia'
         for (const admin of adminSnapshots.docs) {
-          const adminId = admin.id; // ID do administrador
+          const adminId = admin.id;
           const docRef = doc(db, 'sinaisAlarmeFatoresRisco', adminId, 'combinacoes', `${sexo}_${neoplasia}`);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
             const data = docSnap.data();
             const sintomasAdmin = data.sintomas || [];
-            sintomasEncontrados.push(...sintomasAdmin); // Adicionar os sintomas encontrados
+            sintomasEncontrados.push(...sintomasAdmin);
           }
         }
 
         setSintomas(sintomasEncontrados);
       }
-      setLoading(false); // Desativar o spinner de loading
+      setLoading(false);
     };
     fetchData();
   }, [sexo, neoplasia, db]);
@@ -66,11 +64,11 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
 
       if (editandoSintomaIndex !== null) {
         const novosSintomas = [...sintomas];
-        novosSintomas[editandoSintomaIndex] = novoSintomaObj; // Edita o sintoma
+        novosSintomas[editandoSintomaIndex] = novoSintomaObj;
         setSintomas(novosSintomas);
         setEditandoSintomaIndex(null);
       } else {
-        setSintomas([...sintomas, novoSintomaObj]); // Adiciona novo sintoma
+        setSintomas([...sintomas, novoSintomaObj]);
       }
 
       setNovoSintoma('');
@@ -86,7 +84,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const handleEdit = (index: number) => {
     const sintoma = sintomas[index];
     setNovoSintoma(sintoma.descricao);
-    setNovaImagem(sintoma.imagem as File); // Se estiver editando, a imagem pode já ser uma URL
+    setNovaImagem(sintoma.imagem as File);
     setEditandoSintomaIndex(index);
   };
 
@@ -102,12 +100,11 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setLoading(true); // Ativar o spinner de loading durante o salvamento
+    setLoading(true);
     try {
       const adminCollectionRef = collection(db, 'administradores');
       const adminSnapshots = await getDocs(adminCollectionRef);
 
-      // Upload de imagens e salvamento para todos os administradores
       const sintomasComUrls = await Promise.all(
         sintomas.map(async (sintoma) => {
           if (sintoma.imagem instanceof File) {
@@ -116,7 +113,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
             const imageUrl = await getDownloadURL(uploadTask.ref);
             return { descricao: sintoma.descricao, imagem: imageUrl };
           }
-          return sintoma; // Se já for uma URL, retorna diretamente
+          return sintoma;
         })
       );
 
@@ -133,7 +130,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
       console.error('Erro ao salvar os dados no Firebase:', error);
       alert('Erro ao salvar os dados!');
     }
-    setLoading(false); // Desativar o spinner de loading
+    setLoading(false);
   };
 
   return (
@@ -205,7 +202,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
         {loading ? 'Carregando...' : 'Salvar'}
       </button>
-      {loading && <div className={styles.spinner}></div>} {/* Exibir o spinner durante o loading */}
+      {loading && <div className={styles.spinner}></div>}
     </div>
   );
 };

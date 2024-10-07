@@ -35,11 +35,11 @@ const TelaGerenciamento: React.FC = () => {
   const handleButtonSinaisSintomas = () => {
     navigate('/sinaisSintomas');
   };
-  
+
   const handleButtonSinaisAlarmeFatoresRisco = () => {
     navigate('/sinaisAlarmeFatoresRisco');
   };
-  
+
   const handleIndicacoesRastreio = () => {
     navigate('/indicacoesRastreio');
   };
@@ -48,7 +48,6 @@ const TelaGerenciamento: React.FC = () => {
     navigate('/marqueConsulta');
   };
 
-  // Função para o novo botão "Conduta e Manejo após Resultado"
   const handleCondutaManejoResultado = () => {
     navigate('/condutaManejoResultado');
   };

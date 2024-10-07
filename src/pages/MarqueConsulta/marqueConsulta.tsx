@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa'; // Ícones do FontAwesome
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import styles from './marqueConsulta.styles.module.css';
 
 interface Local {
@@ -14,7 +14,7 @@ const MarqueConsulta: React.FC = () => {
   const [novoLocal, setNovoLocal] = useState<Local>({ nome: '', link: '', telefone: '' });
   const [locais, setLocais] = useState<Local[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
 
   const fetchLocais = async (sexoAtual: string) => {
@@ -27,7 +27,7 @@ const MarqueConsulta: React.FC = () => {
       const adminId = admin.id;
       const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexoAtual}`);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         const data = docSnap.data();
         const locaisAdmin = data.locais || [];
@@ -87,7 +87,7 @@ const MarqueConsulta: React.FC = () => {
     for (const admin of adminSnapshots.docs) {
       const adminId = admin.id;
       const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexo}`);
-      
+
       try {
         await setDoc(docRef, { locais }, { merge: true });
       } catch (error) {

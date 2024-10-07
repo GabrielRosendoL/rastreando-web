@@ -6,18 +6,17 @@ const IndicacoesRastreio: React.FC = () => {
   const [sexo, setSexo] = useState<string | null>(null);
   const [neoplasia, setNeoplasia] = useState<string | null>(null);
   const [texto, setTexto] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false); // Adicionando estado de loading
+  const [loading, setLoading] = useState<boolean>(false);
   const db = getFirestore();
 
   useEffect(() => {
     const fetchData = async () => {
       if (sexo && neoplasia) {
-        setLoading(true); // Ativando o loading antes de buscar dados
-        // Obter todos os IDs dos administradores
+        setLoading(true);
+  
         const adminCollectionRef = collection(db, 'administradores');
         const adminSnapshots = await getDocs(adminCollectionRef);
 
-        // Percorrer cada administrador para encontrar o documento correto
         for (const admin of adminSnapshots.docs) {
           const adminId = admin.id;
           const docRef = doc(db, 'indicacoesRastreio', `${adminId}_${sexo}_${neoplasia}`);
@@ -25,10 +24,10 @@ const IndicacoesRastreio: React.FC = () => {
 
           if (docSnap.exists()) {
             setTexto(docSnap.data().texto);
-            break; // Se encontrou um documento, interrompe o loop
+            break;
           }
         }
-        setLoading(false); // Desativando o loading após buscar dados
+        setLoading(false);
       }
     };
     fetchData();
@@ -36,43 +35,43 @@ const IndicacoesRastreio: React.FC = () => {
 
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSexo(event.target.value);
-    setNeoplasia(null); 
-    setTexto(''); 
+    setNeoplasia(null);
+    setTexto('');
   };
 
   const handleNeoplasiaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setNeoplasia(event.target.value);
-    setTexto(''); 
+    setTexto('');
   };
 
   const handleSave = async () => {
-    setLoading(true); // Ativando o loading durante o salvamento
+    setLoading(true);
     if (sexo && neoplasia) {
-      // Obter todos os IDs dos administradores
+
       const adminCollectionRef = collection(db, 'administradores');
       const adminSnapshots = await getDocs(adminCollectionRef);
 
       for (const admin of adminSnapshots.docs) {
         const adminId = admin.id;
         const docRef = doc(db, 'indicacoesRastreio', `${adminId}_${sexo}_${neoplasia}`);
-        
+
         try {
           await setDoc(docRef, {
             sexo,
             neoplasia,
             texto,
           });
-          alert('Sucesso!'); // Alerta de sucesso ao salvar
+          alert('Sucesso!');
         } catch (error) {
           console.error('Erro ao salvar os dados no Firebase:', error);
           alert('Erro ao salvar os dados!');
         }
       }
 
-      setLoading(false); // Desativando o loading após o salvamento
+      setLoading(false);
     } else {
       alert('Por favor, preencha todos os campos.');
-      setLoading(false); // Desativando o loading caso falhe
+      setLoading(false);
     }
   };
 
@@ -123,7 +122,7 @@ const IndicacoesRastreio: React.FC = () => {
       <button onClick={handleSave} className={styles.btnSave} disabled={loading}>
         {loading ? 'Carregando...' : 'Salvar'}
       </button>
-      {loading && <div className={styles.spinner}></div>} {/* Exibe o spinner durante o loading */}
+      {loading && <div className={styles.spinner}></div>}
     </div>
   );
 };

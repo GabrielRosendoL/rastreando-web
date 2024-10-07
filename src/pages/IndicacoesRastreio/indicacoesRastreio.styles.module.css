@@ -33,23 +33,22 @@ body {
   max-height: 90vh;
 }
 
-/* Estilo da barra de rolagem */
 .container::-webkit-scrollbar {
-  width: 8px; /* Define a largura da barra de rolagem */
+  width: 8px;
 }
 
 .container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cor do fundo da barra de rolagem */
+  background: #f1f1f1;
   border-radius: 10px;
 }
 
 .container::-webkit-scrollbar-thumb {
-  background: #f03f04; /* Cor da barra de rolagem */
+  background: #f03f04;
   border-radius: 10px;
 }
 
 .container::-webkit-scrollbar-thumb:hover {
-  background: #e03a02; /* Cor ao passar o mouse */
+  background: #e03a02;
 }
 
 .title {

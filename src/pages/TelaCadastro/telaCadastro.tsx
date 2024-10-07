@@ -17,7 +17,7 @@ const TelaCadastro: React.FC = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
       const user = userCredential.user;
-      
+
       await setDoc(doc(db, 'administradores', user.uid), {
         email: user.email,
         nome,
@@ -28,7 +28,7 @@ const TelaCadastro: React.FC = () => {
       setError('Erro ao criar conta: ' + (error as any).message);
     }
   };
-  
+
   const handleTelaLogin = () => {
     navigate('/telaLogin');
   };

@@ -48,7 +48,8 @@ body {
   border-radius: 5px;
 }
 
-.btn, .btnLogin {
+.btn,
+.btnLogin {
   width: 100%;
   padding: 10px;
   background-color: #232d97;
@@ -67,6 +68,7 @@ body {
 .btnLogin:hover {
   background-color: #ff5721;
 }
+
 .btn:hover {
   background-color: #ff5721;
 }
