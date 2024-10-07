@@ -1,5 +1,6 @@
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Ícones do FontAwesome
 import styles from './marqueConsulta.styles.module.css';
 
 interface Local {
@@ -13,17 +14,15 @@ const MarqueConsulta: React.FC = () => {
   const [novoLocal, setNovoLocal] = useState<Local>({ nome: '', link: '', telefone: '' });
   const [locais, setLocais] = useState<Local[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Usando o estado 'loading' para busca
+  const [loading, setLoading] = useState<boolean>(false); 
   const db = getFirestore();
 
-  // Função para buscar os locais do Firebase para todos os administradores
   const fetchLocais = async (sexoAtual: string) => {
-    setLoading(true); // Inicia o loading
+    setLoading(true);
     const adminCollectionRef = collection(db, 'administradores');
     const adminSnapshots = await getDocs(adminCollectionRef);
     const locaisEncontrados: Local[] = [];
 
-    // Percorrer todos os administradores para buscar os locais
     for (const admin of adminSnapshots.docs) {
       const adminId = admin.id;
       const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexoAtual}`);
@@ -32,12 +31,12 @@ const MarqueConsulta: React.FC = () => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const locaisAdmin = data.locais || [];
-        locaisEncontrados.push(...locaisAdmin); // Adiciona os locais do administrador
+        locaisEncontrados.push(...locaisAdmin);
       }
     }
 
     setLocais(locaisEncontrados);
-    setLoading(false); // Finaliza o loading
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -49,19 +48,19 @@ const MarqueConsulta: React.FC = () => {
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const novoSexo = event.target.value;
     setSexo(novoSexo);
-    setLocais([]); // Resetar a lista ao mudar de sexo
-    fetchLocais(novoSexo); // Buscar locais para o novo sexo selecionado
+    setLocais([]);
+    fetchLocais(novoSexo);
   };
 
   const handleAddLocal = () => {
     if (novoLocal.nome && novoLocal.link && novoLocal.telefone) {
       if (editandoIndex !== null) {
         const novosLocais = [...locais];
-        novosLocais[editandoIndex] = novoLocal; // Atualizando local existente
+        novosLocais[editandoIndex] = novoLocal;
         setLocais(novosLocais);
         setEditandoIndex(null);
       } else {
-        setLocais([...locais, novoLocal]); // Adicionando novo local
+        setLocais([...locais, novoLocal]);
       }
       setNovoLocal({ nome: '', link: '', telefone: '' });
     } else {
@@ -72,12 +71,16 @@ const MarqueConsulta: React.FC = () => {
   const handleEditLocal = (index: number) => {
     const localParaEditar = locais[index];
     setNovoLocal(localParaEditar);
-    setEditandoIndex(index); // Define o índice do item em edição
+    setEditandoIndex(index);
+  };
+
+  const handleRemoveLocal = (index: number) => {
+    const novosLocais = locais.filter((_, i) => i !== index);
+    setLocais(novosLocais);
   };
 
   const handleSave = async () => {
-    setLoading(true); // Inicia o loading ao salvar
-    // Obter todos os IDs dos administradores para salvar os locais
+    setLoading(true);
     const adminCollectionRef = collection(db, 'administradores');
     const adminSnapshots = await getDocs(adminCollectionRef);
 
@@ -85,7 +88,6 @@ const MarqueConsulta: React.FC = () => {
       const adminId = admin.id;
       const docRef = doc(db, 'marqueConsulta', `${adminId}_${sexo}`);
       
-      // Salvando os locais no documento do Firebase---
       try {
         await setDoc(docRef, { locais }, { merge: true });
       } catch (error) {
@@ -95,7 +97,7 @@ const MarqueConsulta: React.FC = () => {
     }
 
     alert('Sucesso!');
-    setLoading(false); // Finaliza o loading ao salvar
+    setLoading(false);
   };
 
   return (
@@ -112,7 +114,7 @@ const MarqueConsulta: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className={styles.spinner}></div> // Spinner enquanto carrega
+        <div className={styles.spinner}></div>
       ) : (
         <>
           <div className={styles.formGroup}>
@@ -156,7 +158,12 @@ const MarqueConsulta: React.FC = () => {
                     <strong>Nome:</strong> {local.nome} <br />
                     <strong>Link:</strong> <a href={local.link} target="_blank" rel="noopener noreferrer">{local.link}</a> <br />
                     <strong>Telefone:</strong> {local.telefone}
-                    <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>Editar</button>
+                    <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>
+                      <FaEdit className={styles.icon} />
+                    </button>
+                    <button onClick={() => handleRemoveLocal(index)} className={styles.btnRemove}>
+                      <FaTrash className={styles.icon} />
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -168,7 +175,6 @@ const MarqueConsulta: React.FC = () => {
           </button>
         </>
       )}
-      {/* {loading && <div className={styles.spinner}></div>} */}
     </div>
   );
 };

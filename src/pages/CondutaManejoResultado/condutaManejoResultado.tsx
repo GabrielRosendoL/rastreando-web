@@ -1,6 +1,8 @@
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Ícones do FontAwesome
 import styles from './condutaManejoResultado.styles.module.css';
+
 
 interface Item {
   resultado: string;
@@ -78,6 +80,12 @@ const CondutaManejoResultado: React.FC = () => {
     setNovoItem(itemParaEditar);
     setEditandoIndex(index); // Define o índice do item em edição
   };
+  
+  const handleRemoveItem = (index: number) => {
+    const novosItens = itens.filter((_, i) => i !== index);
+    setItens(novosItens);
+  };
+  
 
   const handleSave = async () => {
     setLoading(true);
@@ -170,14 +178,24 @@ const CondutaManejoResultado: React.FC = () => {
               <div className={styles.scrollView}>
                 <h3>Resultados Cadastrados:</h3>
                 <ul className={styles.itemList}>
-                  {itens.map((item, index) => (
-                    <li key={index} className={styles.item}>
-                      <strong>Resultado:</strong> {item.resultado} <br />
-                      <strong>Descrição:</strong> {item.descricao} <br />
-                      <button onClick={() => handleEditItem(index)} className={styles.btnEdit}>Editar</button>
-                    </li>
-                  ))}
-                </ul>
+  {itens.map((item, index) => (
+    <li key={index} className={styles.item}>
+      <div>
+        <strong>Resultado:</strong> {item.resultado} <br />
+        <strong>Descrição:</strong> {item.descricao}
+      </div>
+      <div className={styles.buttonsContainer}>
+        <button onClick={() => handleEditItem(index)} className={styles.btnEdit}>
+          <FaEdit className={styles.icon} />
+        </button>
+        <button onClick={() => handleRemoveItem(index)} className={styles.btnRemove}>
+          <FaTrash className={styles.icon} />
+        </button>
+      </div>
+    </li>
+  ))}
+</ul>
+
               </div>
             )}
 

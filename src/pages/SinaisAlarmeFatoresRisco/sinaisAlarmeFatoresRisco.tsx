@@ -172,13 +172,13 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
       )}
       {neoplasia && (
         <div className={styles.formGroup}>
-          <label>Adicione Sinais e Sintomas:</label>
+          <label>Adicione Sinal de Alarme/Fator de Risco:</label>
           <input
             type="text"
             value={novoSintoma}
             onChange={(e) => setNovoSintoma(e.target.value)}
             className={styles.input}
-            placeholder="Descrição do sintoma"
+            placeholder="Descrição"
           />
           <input type="file" onChange={handleImageChange} className={styles.input} ref={imagemInputRef} />
           <button onClick={handleAddOrEditSintoma} className={styles.btnAdd}>

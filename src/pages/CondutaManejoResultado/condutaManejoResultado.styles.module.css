@@ -118,7 +118,7 @@
     text-decoration: underline;
   }
   
-  .btnAdd, .btnSave, .btnEdit {
+  .btnAdd, .btnSave, .btnEdit, .btnRemove {
     width: 100%;
     padding: 10px;
     background-color: #232d97;
@@ -130,8 +130,36 @@
     margin-top: 10px;
   }
   
+  .btnEdit, .btnRemove {
+    background-color: #232d97;
+    color: white;
+    border: none;
+    padding: 0;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btnEdit:hover, .btnRemove:hover {
+    background-color: #f03f04;
+  }
+  
+  .icon {
+    font-size: 16px;
+  }
+  
   .btnAdd:hover, .btnSave:hover, .btnEdit:hover {
     background-color: #ff5721;
+  }
+  
+  .buttonsContainer {
+    display: flex;
+    gap: 10px;
   }
   
   .spinner {
