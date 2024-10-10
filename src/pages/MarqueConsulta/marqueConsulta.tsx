@@ -15,6 +15,7 @@ const MarqueConsulta: React.FC = () => {
   const [locais, setLocais] = useState<Local[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const db = getFirestore();
 
   const fetchLocais = async (sexoAtual: string) => {
@@ -45,6 +46,16 @@ const MarqueConsulta: React.FC = () => {
     }
   }, [sexo, db]);
 
+  const isValidLink = (link: string) => {
+    const linkPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+    return linkPattern.test(link);
+  };
+
+  const isValidPhone = (phone: string) => {
+    const phonePattern = /^\(?\d{2,3}\)?[-.\s]?\d{4,5}[-.\s]?\d{4}$/;
+    return phonePattern.test(phone);
+  };
+
   const handleSexoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const novoSexo = event.target.value;
     setSexo(novoSexo);
@@ -53,19 +64,30 @@ const MarqueConsulta: React.FC = () => {
   };
 
   const handleAddLocal = () => {
-    if (novoLocal.nome && novoLocal.link && novoLocal.telefone) {
-      if (editandoIndex !== null) {
-        const novosLocais = [...locais];
-        novosLocais[editandoIndex] = novoLocal;
-        setLocais(novosLocais);
-        setEditandoIndex(null);
-      } else {
-        setLocais([...locais, novoLocal]);
-      }
-      setNovoLocal({ nome: '', link: '', telefone: '' });
-    } else {
+    if (!novoLocal.nome || !novoLocal.link || !novoLocal.telefone) {
       alert('Preencha todos os campos!');
+      return;
     }
+
+    if (!isValidLink(novoLocal.link)) {
+      alert('O campo Link deve conter uma URL válida!');
+      return;
+    }
+
+    if (!isValidPhone(novoLocal.telefone)) {
+      alert('O campo Telefone deve conter um número válido!');
+      return;
+    }
+
+    if (editandoIndex !== null) {
+      const novosLocais = [...locais];
+      novosLocais[editandoIndex] = novoLocal;
+      setLocais(novosLocais);
+      setEditandoIndex(null);
+    } else {
+      setLocais([...locais, novoLocal]);
+    }
+    setNovoLocal({ nome: '', link: '', telefone: '' });
   };
 
   const handleEditLocal = (index: number) => {
@@ -90,14 +112,18 @@ const MarqueConsulta: React.FC = () => {
 
       try {
         await setDoc(docRef, { locais }, { merge: true });
+        setShowDialog(true);
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
       }
     }
 
-    alert('Sucesso!');
     setLoading(false);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
   };
 
   return (
@@ -158,12 +184,14 @@ const MarqueConsulta: React.FC = () => {
                     <strong>Nome:</strong> {local.nome} <br />
                     <strong>Link:</strong> <a href={local.link} target="_blank" rel="noopener noreferrer">{local.link}</a> <br />
                     <strong>Telefone:</strong> {local.telefone}
-                    <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>
-                      <FaEdit className={styles.icon} />
-                    </button>
-                    <button onClick={() => handleRemoveLocal(index)} className={styles.btnRemove}>
-                      <FaTrash className={styles.icon} />
-                    </button>
+                    <div className={styles.divButtons}>
+                      <button onClick={() => handleEditLocal(index)} className={styles.btnEdit}>
+                        <FaEdit className={styles.icon} />
+                      </button>
+                      <button onClick={() => handleRemoveLocal(index)} className={styles.btnRemove}>
+                        <FaTrash className={styles.icon} />
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -175,8 +203,51 @@ const MarqueConsulta: React.FC = () => {
           </button>
         </>
       )}
+
+      {showDialog && (
+        <div style={dialogOverlayStyle}>
+          <div style={dialogBoxStyle}>
+            <h2>Sucesso!</h2>
+            <p>Os dados foram salvos com sucesso.</p>
+            <button onClick={handleCloseDialog} style={dialogButtonStyle}>
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
+
+const dialogOverlayStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const dialogBoxStyle: React.CSSProperties = {
+  backgroundColor: '#fff',
+  padding: '20px',
+  borderRadius: '10px',
+  textAlign: 'center',
+  boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+  width: '300px',
+};
+
+const dialogButtonStyle: React.CSSProperties = {
+  marginTop: '20px',
+  padding: '10px 20px',
+  backgroundColor: '#232d97',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
 };
 
 export default MarqueConsulta;

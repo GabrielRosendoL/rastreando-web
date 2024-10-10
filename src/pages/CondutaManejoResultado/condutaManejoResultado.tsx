@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import styles from './condutaManejoResultado.styles.module.css';
 
-
 interface Item {
   resultado: string;
   descricao: string;
@@ -16,6 +15,7 @@ const CondutaManejoResultado: React.FC = () => {
   const [itens, setItens] = useState<Item[]>([]);
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const db = getFirestore();
 
   const fetchItens = async (sexoAtual: string, neoplasiaAtual: string) => {
@@ -84,7 +84,6 @@ const CondutaManejoResultado: React.FC = () => {
     setItens(novosItens);
   };
 
-
   const handleSave = async () => {
     setLoading(true);
     const adminCollectionRef = collection(db, 'administradores');
@@ -96,14 +95,18 @@ const CondutaManejoResultado: React.FC = () => {
 
       try {
         await setDoc(docRef, { itens }, { merge: true });
+        setShowDialog(true);
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
       }
     }
 
-    alert('Sucesso!');
     setLoading(false);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
   };
 
   return (
@@ -192,7 +195,6 @@ const CondutaManejoResultado: React.FC = () => {
                     </li>
                   ))}
                 </ul>
-
               </div>
             )}
 
@@ -202,8 +204,51 @@ const CondutaManejoResultado: React.FC = () => {
           </>
         )
       )}
+
+      {showDialog && (
+        <div style={dialogOverlayStyle}>
+          <div style={dialogBoxStyle}>
+            <h2>Sucesso!</h2>
+            <p>Os dados foram salvos com sucesso.</p>
+            <button onClick={handleCloseDialog} style={dialogButtonStyle}>
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
+
+const dialogOverlayStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const dialogBoxStyle: React.CSSProperties = {
+  backgroundColor: '#fff',
+  padding: '20px',
+  borderRadius: '10px',
+  textAlign: 'center',
+  boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+  width: '300px',
+};
+
+const dialogButtonStyle: React.CSSProperties = {
+  marginTop: '20px',
+  padding: '10px 20px',
+  backgroundColor: '#232d97',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
 };
 
 export default CondutaManejoResultado;

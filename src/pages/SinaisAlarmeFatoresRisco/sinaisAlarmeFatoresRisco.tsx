@@ -17,6 +17,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const [novaImagem, setNovaImagem] = useState<File | null>(null);
   const [editandoSintomaIndex, setEditandoSintomaIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const imagemInputRef = useRef<HTMLInputElement | null>(null);
   const db = getFirestore();
   const storage = getStorage();
@@ -125,12 +126,16 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
         });
       }
 
-      alert('Sucesso!');
+      setShowDialog(true);
     } catch (error) {
       console.error('Erro ao salvar os dados no Firebase:', error);
       alert('Erro ao salvar os dados!');
     }
     setLoading(false);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
   };
 
   return (
@@ -203,8 +208,51 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
         {loading ? 'Carregando...' : 'Salvar'}
       </button>
       {loading && <div className={styles.spinner}></div>}
+
+      {showDialog && (
+        <div style={dialogOverlayStyle}>
+          <div style={dialogBoxStyle}>
+            <h2>Sucesso!</h2>
+            <p>Os dados foram salvos com sucesso.</p>
+            <button onClick={handleCloseDialog} style={dialogButtonStyle}>
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
+
+const dialogOverlayStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const dialogBoxStyle: React.CSSProperties = {
+  backgroundColor: '#fff',
+  padding: '20px',
+  borderRadius: '10px',
+  textAlign: 'center',
+  boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+  width: '300px',
+};
+
+const dialogButtonStyle: React.CSSProperties = {
+  marginTop: '20px',
+  padding: '10px 20px',
+  backgroundColor: '#232d97',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
 };
 
 export default SinaisAlarmeFatoresRisco;

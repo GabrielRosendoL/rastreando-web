@@ -167,7 +167,7 @@ body {
 
 .buttonsContainer {
   display: flex;
-  gap: 10px;
+  justify-content: space-around;  
 }
 
 .spinner {

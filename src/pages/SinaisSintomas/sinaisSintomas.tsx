@@ -11,7 +11,7 @@ const SinaisSintomas: React.FC = () => {
   const [novoSintoma, setNovoSintoma] = useState<string>('');
   const [editandoSintoma, setEditandoSintoma] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showDialog, setShowDialog] = useState<boolean>(false); // Estado para controlar a exibição do diálogo
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const db = getFirestore();
   const navigate = useNavigate();
 
@@ -91,7 +91,7 @@ const SinaisSintomas: React.FC = () => {
           });
         }
 
-        setShowDialog(true); // Mostra o diálogo ao salvar com sucesso
+        setShowDialog(true);
       } catch (error) {
         console.error('Erro ao salvar os dados no Firebase:', error);
         alert('Erro ao salvar os dados!');
@@ -104,7 +104,7 @@ const SinaisSintomas: React.FC = () => {
 
   const handleCloseDialog = () => {
     setShowDialog(false);
-    navigate(-1); // Navega de volta ao fechar o diálogo
+    navigate(-1);
   };
 
   return (
@@ -175,7 +175,6 @@ const SinaisSintomas: React.FC = () => {
       </button>
       {loading && <div className={styles.spinner}></div>}
 
-      {/* Diálogo personalizado */}
       {showDialog && (
         <div style={dialogOverlayStyle}>
           <div style={dialogBoxStyle}>
@@ -191,7 +190,6 @@ const SinaisSintomas: React.FC = () => {
   );
 };
 
-// Estilos embutidos para o diálogo
 const dialogOverlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0,
