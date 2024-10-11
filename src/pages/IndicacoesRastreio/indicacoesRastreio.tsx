@@ -1,5 +1,7 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './indicacoesRastreio.styles.module.css';
 
 const IndicacoesRastreio: React.FC = () => {
@@ -9,6 +11,19 @@ const IndicacoesRastreio: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const db = getFirestore();
+  const auth = getAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          navigate('/telaLogin');
+        }
+      });
+    };
+    checkAuth();
+  }, [auth, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {

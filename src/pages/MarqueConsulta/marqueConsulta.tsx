@@ -1,6 +1,8 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import styles from './marqueConsulta.styles.module.css';
 
 interface Local {
@@ -17,6 +19,19 @@ const MarqueConsulta: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const db = getFirestore();
+  const auth = getAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          navigate('/telaLogin');
+        }
+      });
+    };
+    checkAuth();
+  }, [auth, navigate]);
 
   const fetchLocais = async (sexoAtual: string) => {
     setLoading(true);

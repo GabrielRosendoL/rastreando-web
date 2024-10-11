@@ -1,3 +1,4 @@
+import { signOut } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,26 +12,21 @@ const TelaGerenciamento: React.FC = () => {
 
   useEffect(() => {
     const fetchUserName = async () => {
-      console.log('fetchUserName chamado');
       const user = auth.currentUser;
       if (user) {
-        console.log('Usuário autenticado:', user.uid);
         const userDocRef = doc(db, 'administradores', user.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
           const nome = userDoc.data().nome;
-          console.log('Nome do usuário:', nome);
           setUserName(nome);
-        } else {
-          console.log('Documento do usuário não encontrado');
         }
       } else {
-        console.log('Nenhum usuário autenticado');
+        navigate('/telaLogin');
       }
     };
 
     fetchUserName();
-  }, [db]);
+  }, [db, navigate]);
 
   const handleButtonSinaisSintomas = () => {
     navigate('/sinaisSintomas');
@@ -50,6 +46,11 @@ const TelaGerenciamento: React.FC = () => {
 
   const handleCondutaManejoResultado = () => {
     navigate('/condutaManejoResultado');
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/telaLogin');
   };
 
   return (
@@ -72,6 +73,9 @@ const TelaGerenciamento: React.FC = () => {
       </button>
       <button onClick={handleCondutaManejoResultado} className={styles.btn}>
         Conduta e Manejo após Resultado
+      </button>
+      <button onClick={handleLogout} className={styles.logoutBtn}>
+        Sair
       </button>
     </div>
   );

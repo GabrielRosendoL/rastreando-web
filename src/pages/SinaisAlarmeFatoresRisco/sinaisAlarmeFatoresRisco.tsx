@@ -1,7 +1,9 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import styles from './sinaisAlarmeFatoresRisco.styles.module.css';
 
 interface Sintoma {
@@ -21,6 +23,19 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
   const imagemInputRef = useRef<HTMLInputElement | null>(null);
   const db = getFirestore();
   const storage = getStorage();
+  const auth = getAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          navigate('/telaLogin');
+        }
+      });
+    };
+    checkAuth();
+  }, [auth, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
