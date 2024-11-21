@@ -194,7 +194,7 @@ const SinaisSintomas: React.FC = () => {
             <h2>Sucesso!</h2>
             <p>Os dados foram salvos com sucesso.</p>
             <button onClick={handleCloseDialog} style={dialogButtonStyle}>
-              Okay
+              Ok
             </button>
           </div>
         </div>
