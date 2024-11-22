@@ -93,7 +93,7 @@ const SinaisAlarmeFatoresRisco: React.FC = () => {
         imagemInputRef.current.value = '';
       }
     } else {
-      alert('Por favor, preencha o sintoma e selecione uma imagem.');
+      alert('Por favor, preencha o campo e selecione uma imagem.');
     }
   };
 
